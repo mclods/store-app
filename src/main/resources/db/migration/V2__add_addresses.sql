@@ -4,5 +4,5 @@ CREATE TABLE addresses (
 	city VARCHAR(255) NOT NULL,
 	zip VARCHAR(255) NOT NULL,
 	state VARCHAR(255) NOT NULL,
-	user_id BIGINT REFERENCES users(id)
+	user_id BIGINT NOT NULL REFERENCES users(id)
 );
