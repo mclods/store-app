@@ -43,26 +43,13 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Profile profile;
 
-    public void addAddress(Address address) {
-        address.setUser(this);
-        addresses.add(address);
-    }
-
-    public void removeAddress(Address address) {
-        addresses.remove(address);
-        address.setUser(null);
-    }
-
-    public void addTag(String tagName) {
-        Tag tag = new Tag(tagName);
-        tags.add(tag);
-        tag.setUser(this);
-    }
-
-    public void removeTag(Tag tag) {
-        tags.remove(tag);
-        tag.setUser(null);
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> wishlist = new HashSet<>();
 
     @Override
     public boolean equals(Object obj) {
@@ -74,16 +61,13 @@ public class User {
             return false;
         }
 
-        return (id == null || id.equals(userObj.id)) &&
-                name.equals(userObj.name) &&
-                email.equals(userObj.email) &&
-                password.equals(userObj.password);
+        return id != null && id.equals(userObj.id);
     }
 
     @Override
     public String toString() {
         return String.format("User (id=%d, name=%s, email=%s, " +
-                        "password=%s, addresses=%s, tags=%s, profile=%s)",
-                id, name, email, password, addresses, tags, profile);
+                        "password=%s, addresses=%s, tags=%s, profile=%s, wishlist=%s)",
+                id, name, email, password, addresses, tags, profile, wishlist);
     }
 }
