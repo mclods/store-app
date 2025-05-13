@@ -30,6 +30,7 @@ public class Profile {
 
     @OneToOne
     @JoinColumn(name = "id")
+    @MapsId
     private User user;
 
     @Override
@@ -42,11 +43,7 @@ public class Profile {
             return false;
         }
 
-        return (id == null || id.equals(profileObj.id)) &&
-                bio.equals(profileObj.bio) &&
-                phoneNumber.equals(profileObj.phoneNumber) &&
-                dateOfBirth.equals(profileObj.dateOfBirth) &&
-                loyaltyPoints.equals(profileObj.loyaltyPoints);
+        return id != null && id.equals(profileObj.id);
     }
 
     @Override

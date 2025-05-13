@@ -3,6 +3,9 @@ package com.mclods.store_app.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "tags")
 @Getter
@@ -19,11 +22,7 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
-    private User user;
-
-    Tag(String name) {
-        this.name = name;
-    }
+    private Set<User> users = new HashSet<>();
 
     @Override
     public boolean equals(Object obj) {
@@ -35,8 +34,7 @@ public class Tag {
             return false;
         }
 
-        return (id == null || id.equals(tagObj.id)) &&
-                name.equals(tagObj.name);
+        return id != null && id.equals(tagObj.id);
     }
 
     @Override

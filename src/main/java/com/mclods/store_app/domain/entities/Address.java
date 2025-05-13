@@ -41,12 +41,7 @@ public class Address {
             return false;
         }
 
-        return (id == null || id.equals(addressObj.id)) &&
-                street.equals(addressObj.street) &&
-                city.equals(addressObj.city) &&
-                zip.equals(addressObj.zip) &&
-                state.equals(addressObj.state) &&
-                user.equals(addressObj.user);
+        return id != null && id.equals(addressObj.id);
     }
 
     @Override
