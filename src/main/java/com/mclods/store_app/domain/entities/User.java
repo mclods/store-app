@@ -42,7 +42,7 @@ public class User {
     @Setter(AccessLevel.NONE)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     @Setter(AccessLevel.NONE)
     private Profile profile;
 
