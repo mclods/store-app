@@ -30,6 +30,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @Setter(AccessLevel.NONE)
     private List<Address> addresses = new ArrayList<>();
 
     @ManyToMany
@@ -38,9 +39,11 @@ public class User {
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
+    @Setter(AccessLevel.NONE)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE})
+    @Setter(AccessLevel.NONE)
     private Profile profile;
 
     @ManyToMany
@@ -49,6 +52,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
+    @Setter(AccessLevel.NONE)
     private Set<Product> wishlist = new HashSet<>();
 
     public User(String name, String email, String password) {
@@ -65,6 +69,16 @@ public class User {
     public void removeAddress(Address address) {
         address.setUser(null);
         addresses.remove(address);
+    }
+
+    public void addProfile(Profile profile) {
+        profile.setUser(this);
+        this.profile = profile;
+    }
+
+    public void removeProfile(Profile profile) {
+        profile.setUser(null);
+        this.profile = null;
     }
 
     public void addToWishlist(Product product) {
