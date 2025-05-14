@@ -1,10 +1,7 @@
 package com.mclods.store_app.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +9,13 @@ import java.util.List;
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 public class Category {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Short id;
 
     @Column(name = "name")
@@ -26,6 +23,10 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     List<Product> products = new ArrayList<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -1,21 +1,18 @@
 package com.mclods.store_app.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Product {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name")
@@ -27,6 +24,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    public Product(String name, Double price) {
+        this.name = name;
+        this.price = price;
+    }
 
     @Override
     public boolean equals(Object obj) {
