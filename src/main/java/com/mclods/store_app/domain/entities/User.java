@@ -13,11 +13,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name")
@@ -50,6 +50,30 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private Set<Product> wishlist = new HashSet<>();
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    public void addAddress(Address address) {
+        address.setUser(this);
+        addresses.add(address);
+    }
+
+    public void removeAddress(Address address) {
+        address.setUser(null);
+        addresses.remove(address);
+    }
+
+    public void addToWishlist(Product product) {
+        wishlist.add(product);
+    }
+
+    public void removeFromWishlist(Product product) {
+        wishlist.remove(product);
+    }
 
     @Override
     public boolean equals(Object obj) {

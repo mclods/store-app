@@ -7,12 +7,12 @@ import lombok.*;
 @Table(name = "addresses")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "street")
@@ -30,6 +30,13 @@ public class Address {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Address(String street, String city, String zip, String state) {
+        this.street = street;
+        this.city = city;
+        this.zip = zip;
+        this.state = state;
+    }
 
     @Override
     public boolean equals(Object obj) {
