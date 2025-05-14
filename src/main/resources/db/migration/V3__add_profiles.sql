@@ -1,5 +1,5 @@
 CREATE TABLE profiles (
-    id BIGINT PRIMARY KEY REFERENCES users(id),
+    id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     bio TEXT,
     phone_number VARCHAR(15),
     date_of_birth DATE,
