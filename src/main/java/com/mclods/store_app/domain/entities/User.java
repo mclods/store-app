@@ -29,7 +29,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
+            orphanRemoval = true)
     @Setter(AccessLevel.NONE)
     private List<Address> addresses = new ArrayList<>();
 
@@ -42,7 +44,9 @@ public class User {
     @Setter(AccessLevel.NONE)
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToOne(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToOne(mappedBy = "user",
+            cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE },
+            orphanRemoval = true)
     @Setter(AccessLevel.NONE)
     private Profile profile;
 
@@ -76,9 +80,9 @@ public class User {
         this.profile = profile;
     }
 
-    public void removeProfile(Profile profile) {
+    public void removeProfile() {
         profile.setUser(null);
-        this.profile = null;
+        profile = null;
     }
 
     public void addToWishlist(Product product) {

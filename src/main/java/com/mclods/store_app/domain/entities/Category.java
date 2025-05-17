@@ -22,10 +22,21 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
+    @Setter(AccessLevel.NONE)
     List<Product> products = new ArrayList<>();
 
     public Category(String name) {
         this.name = name;
+    }
+
+    public void addProduct(Product product) {
+        product.setCategory(this);
+        products.add(product);
+    }
+
+    public void removeProduct(Product product) {
+        product.setCategory(null);
+        products.remove(product);
     }
 
     @Override

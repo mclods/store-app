@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @Column(name = "id")
@@ -18,17 +19,15 @@ public class Product {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "price")
     private Double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
-
-    public Product(String name, Double price) {
-        this.name = name;
-        this.price = price;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -45,6 +44,7 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("Product (id=%d, name=%s, price=%f)", id, name, price);
+        return String.format("Product (id=%d, name=%s, description=%s, price=%f)",
+                id, name, description, price);
     }
 }
