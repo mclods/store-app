@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +31,6 @@ public class Address {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    public Address(String street, String city, String zip, String state) {
-        this.street = street;
-        this.city = city;
-        this.zip = zip;
-        this.state = state;
-    }
 
     @Override
     public boolean equals(Object obj) {
