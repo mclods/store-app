@@ -1,21 +1,18 @@
-package com.mclods.store_app.domain.dtos;
+package com.mclods.store_app.domain.dtos.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CategoryDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Short id;
 
     private String name;
-
-    List<ProductDto> products = new ArrayList<>();
 }

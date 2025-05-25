@@ -1,5 +1,6 @@
-package com.mclods.store_app.domain.dtos;
+package com.mclods.store_app.domain.dtos.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProfileDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String bio;
@@ -21,6 +23,4 @@ public class ProfileDto {
     private LocalDate dateOfBirth;
 
     private Integer loyaltyPoints;
-
-    private UserDto user;
 }
