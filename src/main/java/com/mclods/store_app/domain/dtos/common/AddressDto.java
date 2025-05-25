@@ -1,5 +1,6 @@
-package com.mclods.store_app.domain.dtos;
+package com.mclods.store_app.domain.dtos.common;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,9 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class AddressDto {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String street;
@@ -19,6 +21,4 @@ public class AddressDto {
     private String zip;
 
     private String state;
-
-    private UserDto user;
 }
