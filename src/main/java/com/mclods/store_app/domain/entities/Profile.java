@@ -10,10 +10,10 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Profile {
     @Id
     @Column(name = "id")
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "bio")
@@ -32,13 +32,6 @@ public class Profile {
     @JoinColumn(name = "id")
     @MapsId
     private User user;
-
-    public Profile(String bio, String phoneNumber, LocalDate dateOfBirth, Integer loyaltyPoints) {
-        this.bio = bio;
-        this.phoneNumber = phoneNumber;
-        this.dateOfBirth = dateOfBirth;
-        this.loyaltyPoints = loyaltyPoints;
-    }
 
     @Override
     public boolean equals(Object obj) {

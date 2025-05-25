@@ -13,11 +13,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name")
@@ -58,12 +58,6 @@ public class User {
     )
     @Setter(AccessLevel.NONE)
     private Set<Product> wishlist = new HashSet<>();
-
-    public User(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
 
     public void addAddress(Address address) {
         address.setUser(this);
