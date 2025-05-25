@@ -1,8 +1,11 @@
 package com.mclods.store_app.services;
 
-import org.springframework.stereotype.Service;
+import com.mclods.store_app.domain.entities.User;
 
-@Service
-public class UserService {
+import java.util.Optional;
 
+public interface UserService {
+    User save(User user);
+    User save(Long id, User user);
+    Optional<User> findOne(Long id);
 }
