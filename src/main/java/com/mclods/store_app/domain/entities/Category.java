@@ -8,14 +8,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "categories")
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Short id;
 
     @Column(name = "name")
@@ -24,10 +24,6 @@ public class Category {
     @OneToMany(mappedBy = "category")
     @Setter(AccessLevel.NONE)
     List<Product> products = new ArrayList<>();
-
-    public Category(String name) {
-        this.name = name;
-    }
 
     public void addProduct(Product product) {
         product.setCategory(this);

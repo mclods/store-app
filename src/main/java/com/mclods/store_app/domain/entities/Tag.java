@@ -11,11 +11,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tag {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Integer id;
 
     @Column(name = "name")
@@ -23,10 +23,6 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private Set<User> users = new HashSet<>();
-
-    public Tag(String name) {
-        this.name = name;
-    }
 
     @Override
     public boolean equals(Object obj) {
