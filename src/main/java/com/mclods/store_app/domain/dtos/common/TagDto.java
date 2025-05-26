@@ -1,6 +1,7 @@
 package com.mclods.store_app.domain.dtos.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ public class TagDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer id;
 
+    @NotNull(message = "tag name cannot be null")
     private String name;
 }

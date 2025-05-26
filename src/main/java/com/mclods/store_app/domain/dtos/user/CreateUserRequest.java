@@ -3,6 +3,7 @@ package com.mclods.store_app.domain.dtos.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mclods.store_app.domain.dtos.common.AddressDto;
 import com.mclods.store_app.domain.dtos.common.ProfileDto;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,13 @@ import java.util.Set;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateUserRequest {
+    @NotNull(message = "user name cannot be null")
     private String name;
 
+    @NotNull(message = "email cannot be null")
     private String email;
 
+    @NotNull(message = "password cannot be null")
     private String password;
 
     private List<AddressDto> addresses = new ArrayList<>();
