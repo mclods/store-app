@@ -20,6 +20,6 @@ public class ProductDto {
 
     private String description;
 
-    @NotNull(message = "category name cannot be null")
+    @NotNull(message = "price cannot be null")
     private Double price;
 }
