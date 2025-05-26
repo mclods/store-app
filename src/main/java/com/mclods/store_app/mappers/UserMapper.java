@@ -1,6 +1,5 @@
 package com.mclods.store_app.mappers;
 
-import com.mclods.store_app.domain.dtos.common.AddressDto;
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
 import com.mclods.store_app.domain.dtos.user.UserResponse;
 import com.mclods.store_app.domain.entities.Address;
@@ -8,20 +7,12 @@ import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
-
-    @Autowired
-    private AddressMapper addressMapper;
-
-    @Autowired
-    private ProfileMapper profileMapper;
-
     public User mapCreateUserRequestToUser(CreateUserRequest createUserRequest) {
        User user = new User(
                null,
@@ -35,8 +26,8 @@ public abstract class UserMapper {
        );
 
        // Address
-       for (AddressDto addressDto : createUserRequest.getAddresses()) {
-           Address address = addressMapper.mapAddressDtoToAddress(addressDto);
+       for (CreateUserRequest.CreateUserAddress createUserAddress : createUserRequest.getAddresses()) {
+           Address address = mapCreateUserAddressToAddress(createUserAddress);
 
            if(address != null) {
                user.addAddress(address);
@@ -44,7 +35,7 @@ public abstract class UserMapper {
        }
 
         // Profile
-        Profile profile = profileMapper.mapProfileDtoToProfile(createUserRequest.getProfile());
+        Profile profile = mapCreateUserProfileToProfile(createUserRequest.getProfile());
 
         if(profile != null) {
            user.addProfile(profile);
@@ -56,6 +47,10 @@ public abstract class UserMapper {
 
         return user;
     }
+
+    public abstract Address mapCreateUserAddressToAddress(CreateUserRequest.CreateUserAddress createUserAddress);
+
+    public abstract Profile mapCreateUserProfileToProfile(CreateUserRequest.CreateUserProfile createUserProfile);
 
     public abstract UserResponse mapUserToUserResponse(User user);
 }
