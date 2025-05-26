@@ -8,9 +8,6 @@ import com.mclods.store_app.domain.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public abstract class UserMapper {
     public User mapCreateUserRequestToUser(CreateUserRequest createUserRequest) {
@@ -19,10 +16,10 @@ public abstract class UserMapper {
                createUserRequest.getName(),
                createUserRequest.getEmail(),
                createUserRequest.getPassword(),
-               new ArrayList<>(),
-               new HashSet<>(),
                null,
-               new HashSet<>()
+               null,
+               null,
+               null
        );
 
        // Address
