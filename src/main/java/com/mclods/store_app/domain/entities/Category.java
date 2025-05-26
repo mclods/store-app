@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Category {
     @Id
     @Column(name = "id")
@@ -24,6 +23,17 @@ public class Category {
     @OneToMany(mappedBy = "category")
     @Setter(AccessLevel.NONE)
     List<Product> products = new ArrayList<>();
+
+    public Category(Short id, String name, List<Product> products) {
+        this.id = id;
+        this.name = name;
+
+        if(products != null) {
+            for(Product product : products) {
+                addProduct(product);
+            }
+        }
+    }
 
     public void addProduct(Product product) {
         product.setCategory(this);
