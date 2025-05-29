@@ -1,8 +1,9 @@
-package com.mclods.store_app.repositories;
+package com.mclods.store_app.integration.repositories;
 
 import com.mclods.store_app.domain.entities.Address;
 import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
+import com.mclods.store_app.repositories.UserRepository;
 import com.mclods.store_app.utils.TestDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
