@@ -81,6 +81,27 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
+    @DisplayName("Test create user fails with status code 400 Bad Request when request body has missing fields")
+    void testCreateUserFailsWithStatusCode400BadRequestWhenRequestBodyHasMissingFields() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.password")
+                        .value("password cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name")
+                        .value("user name cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.email")
+                        .value("email cannot be null")
+        );
+    }
+
+    @Test
     @DisplayName("Test find user succeeds with status code 200 Ok when user is found")
     void testFindUserSucceedsWithStatusCode200OkWhenUserIsFound() throws Exception {
         User user = TestDataUtils.testUserA();
@@ -125,13 +146,37 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isArray()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.addresses[0]").value(user.getAddresses().get(0))
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(user.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(user.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(user.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(user.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].street").value(user.getAddresses().get(1).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].city").value(user.getAddresses().get(1).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].zip").value(user.getAddresses().get(1).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(user.getAddresses().get(1).getState())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.tags").isArray()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.profile").isNotEmpty()
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(user.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(user.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(user.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(user.getProfile().getLoyaltyPoints())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
         ).andExpect(
