@@ -1,6 +1,7 @@
 package com.mclods.store_app.exceptions;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,5 +18,12 @@ public class GlobalExceptionHandler {
                 errors.put(err.getField(), err.getDefaultMessage())
         );
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidJson(HttpMessageNotReadableException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", "Invalid input type: " + ex.getMessage()));
     }
 }
