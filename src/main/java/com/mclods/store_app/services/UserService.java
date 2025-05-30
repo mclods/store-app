@@ -8,4 +8,5 @@ public interface UserService {
     User save(User user);
     User save(Long id, User user);
     Optional<User> findOne(Long id);
+    boolean exists(Long id);
 }

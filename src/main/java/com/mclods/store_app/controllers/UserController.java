@@ -1,6 +1,7 @@
 package com.mclods.store_app.controllers;
 
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
+import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
 import com.mclods.store_app.domain.dtos.user.UserResponse;
 import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.mappers.UserMapper;
@@ -37,5 +38,19 @@ public class UserController {
                 new ResponseEntity<>(userMapper.mapUserToUserResponse(user), HttpStatus.OK))
                 .orElseGet(() ->
                         new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping(path = "/users/{id}")
+    public ResponseEntity<UserResponse> fullUpdateUser(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid FullUpdateUserRequest fullUserUpdateRequest
+    ) {
+        if(!userService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        User userToUpdate = userMapper.mapFullUpdateUserRequestToUser(fullUserUpdateRequest);
+        User updatedUser = userService.save(id, userToUpdate);
+        return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
     }
 }
