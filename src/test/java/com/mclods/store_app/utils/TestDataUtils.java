@@ -20,6 +20,19 @@ public class TestDataUtils {
         );
     }
 
+    public static User testUserB() {
+        return new User(
+                null,
+                "Ari Schwartz",
+                "ari.schwartz@mailman.com",
+                "49ari",
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     public static User testUserWithAddressAndProfileA() {
         User user = testUserA();
 
@@ -49,6 +62,34 @@ public class TestDataUtils {
                 "1234567890",
                 LocalDate.parse("2025-05-27"),
                 25,
+                null
+        );
+
+        user.addProfile(profile);
+
+        return user;
+    }
+
+    public static User testUserWithAddressAndProfileB() {
+        User user = testUserB();
+
+        Address addressA = new Address(
+                null,
+                "4 Hamatechet",
+                "Hadera",
+                "541-000",
+                "Israel",
+                null
+        );
+
+        user.addAddress(addressA);
+
+        Profile profile = new Profile(
+                null,
+                "Ari is an old man.",
+                "8761239810",
+                LocalDate.parse("2025-05-30"),
+                30,
                 null
         );
 
