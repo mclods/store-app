@@ -1,7 +1,9 @@
 package com.mclods.store_app.unit.services;
 
+import com.mclods.store_app.domain.entities.Address;
 import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.repositories.UserRepository;
+import com.mclods.store_app.services.AddressService;
 import com.mclods.store_app.services.ProfileService;
 import com.mclods.store_app.services.impl.UserServiceImpl;
 import com.mclods.store_app.utils.TestDataUtils;
@@ -26,6 +28,9 @@ public class UserServiceTests {
 
     @Mock
     private ProfileService profileService;
+
+    @Mock
+    private AddressService addressService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -52,6 +57,22 @@ public class UserServiceTests {
         userService.save(999L, testUser);
         verify(userRepository).save(argThat(user -> user.getId().equals(999L)
                 && user.getProfile().getId().equals(999L)));
+    }
+
+    @Test
+    @DisplayName("Test save with id cleans invalid address ids before saving")
+    void testSaveWithIdCleansInvalidAddressIdsBeforeSaving() {
+        User testUser = TestDataUtils.testUserA();
+        Address testAddress = TestDataUtils.testAddressA();
+        testAddress.setId(1L);
+
+        testUser.addAddress(testAddress);
+
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(addressService.exists(anyLong())).thenReturn(false);
+
+        userService.save(999L, testUser);
+        verify(userRepository).save(argThat(user -> user.getAddresses().get(0).getId() == null));
     }
 
     @Test

@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.not;
+
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
@@ -85,8 +87,8 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test create user fails with status code 400 Bad Request when request body has missing fields")
-    void testCreateUserFailsWithStatusCode400BadRequestWhenRequestBodyHasMissingFields() throws Exception {
+    @DisplayName("Test create user fails with status code 400 Bad Request when user body has missing fields")
+    void testCreateUserFailsWithStatusCode400BadRequestWhenUserBodyHasMissingFields() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,6 +104,31 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.email")
                         .value("email cannot be null")
+        );
+    }
+
+    @Test
+    @DisplayName("Test create user fails with status code 400 Bad Request when address body has missing fields")
+    void testCreateUserFailsWithStatusCode400BadRequestWhenAddressBodyHasMissingFields() throws Exception {
+        String mockRequest = """
+                {
+                    "name": "Zachary Levi",
+                    "email": "zacharys.mail.@mail.com",
+                    "password": "levi12",
+                    "addresses": [{}]
+                }
+                """;
+
+        String expectedResponse = "{\"addresses[0].city\":\"city cannot be null\",\"addresses[0].state\":\"state cannot be null\",\"addresses[0].street\":\"street cannot be null\",\"addresses[0].zip\":\"zip cannot be null\"}";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mockRequest)
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.content().string(expectedResponse)
         );
     }
 
@@ -222,8 +249,8 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update user removes addresses and profile when request does not contain it")
-    void testFullUpdateUserRemovesAddressesAndProfileWhenRequestDoesNotContainIt() throws Exception {
+    @DisplayName("Test full update user removes addresses and profile when its not provided")
+    void testFullUpdateUserRemovesAddressesAndProfileWhenItsNotProvided() throws Exception {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
         userRepository.save(testUser);
 
@@ -260,8 +287,8 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update user updates address if address id is provided")
-    void testFullUpdateUserUpdatesAddressIfAddressIdIsProvided() throws Exception {
+    @DisplayName("Test full update user updates existing address if address id is provided")
+    void testFullUpdateUserUpdatesExistingAddressIfAddressIdIsProvided() throws Exception {
         User testUser = TestDataUtils.testUserWithAddressAndProfileB();
         userRepository.save(testUser);
 
@@ -293,6 +320,110 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(fullUpdateUserRequest.getAddresses().get(0).getZip())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(fullUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user creates new address and removes the old one if correct address id is not provided")
+    void testFullUpdateUserCreatesNewAddressAndRemovesTheOldOneIfCorrectAddressIdIsNotProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        Long savedUserAddressId = testUser.getAddresses().get(0).getId();
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
+
+        String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fullUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id", not(savedUserAddressId))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(fullUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(fullUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(fullUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(fullUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user updates profile if provided")
+    void testFullUpdateUserUpdatesProfileIfProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
+        String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fullUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile").isNotEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(fullUpdateUserRequest.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(fullUpdateUserRequest.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(fullUpdateUserRequest.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(fullUpdateUserRequest.getProfile().getLoyaltyPoints())
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user fails with status code 400 Bad Request when user body has missing fields")
+    void testFullUpdateUserFailsWithStatusCode400BadRequestWhenUserBodyHasMissingFields() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.password")
+                        .value("password cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name")
+                        .value("user name cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.email")
+                        .value("email cannot be null")
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user fails with status code 400 Bad Request when address body has missing fields")
+    void testFullUpdateUserFailsWithStatusCode400BadRequestWhenAddressBodyHasMissingFields() throws Exception {
+        String mockRequest = """
+                {
+                    "name": "Zachary Levi",
+                    "email": "zacharys.mail.@mail.com",
+                    "password": "levi12",
+                    "addresses": [{}]
+                }
+                """;
+
+        String expectedResponse = "{\"addresses[0].city\":\"city cannot be null\",\"addresses[0].state\":\"state cannot be null\",\"addresses[0].street\":\"street cannot be null\",\"addresses[0].zip\":\"zip cannot be null\"}";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mockRequest)
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.content().string(expectedResponse)
         );
     }
 }
