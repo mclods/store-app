@@ -36,10 +36,8 @@ public class TestDataUtils {
         );
     }
 
-    public static User testUserWithAddressAndProfileA() {
-        User user = testUserA();
-
-        Address addressA = new Address(
+    public static Address testAddressA() {
+        return new Address(
                 null,
                 "Ben Yehuda Alley",
                 "Tel Aviv - Jaffa",
@@ -47,7 +45,10 @@ public class TestDataUtils {
                 "Israel",
                 null
         );
-        Address addressB = new Address(
+    }
+
+    public static Address testAddressB() {
+        return new Address(
                 null,
                 "16 Yafo Street",
                 "Jerusalem",
@@ -55,11 +56,21 @@ public class TestDataUtils {
                 "Israel",
                 null
         );
+    }
 
-        user.addAddress(addressA);
-        user.addAddress(addressB);
+    public static Address testAddressC() {
+        return new Address(
+                null,
+                "4 Hamatechet",
+                "Hadera",
+                "541-000",
+                "Israel",
+                null
+        );
+    }
 
-        Profile profile = new Profile(
+    public static Profile testProfileA() {
+        return new Profile(
                 null,
                 "Hi I'm Michael",
                 "1234567890",
@@ -67,7 +78,29 @@ public class TestDataUtils {
                 25,
                 null
         );
+    }
 
+    public static Profile testProfileB() {
+        return new Profile(
+                null,
+                "Ari is an old man.",
+                "8761239810",
+                LocalDate.parse("2025-05-30"),
+                30,
+                null
+        );
+    }
+
+    public static User testUserWithAddressAndProfileA() {
+        User user = testUserA();
+
+        Address addressA = testAddressA();
+        user.addAddress(addressA);
+
+        Address addressB = testAddressB();
+        user.addAddress(addressB);
+
+        Profile profile = testProfileA();
         user.addProfile(profile);
 
         return user;
@@ -76,26 +109,10 @@ public class TestDataUtils {
     public static User testUserWithAddressAndProfileB() {
         User user = testUserB();
 
-        Address addressA = new Address(
-                null,
-                "4 Hamatechet",
-                "Hadera",
-                "541-000",
-                "Israel",
-                null
-        );
-
+        Address addressA = testAddressC();
         user.addAddress(addressA);
 
-        Profile profile = new Profile(
-                null,
-                "Ari is an old man.",
-                "8761239810",
-                LocalDate.parse("2025-05-30"),
-                30,
-                null
-        );
-
+        Profile profile = testProfileB();
         user.addProfile(profile);
 
         return user;
