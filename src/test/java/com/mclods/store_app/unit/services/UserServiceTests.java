@@ -39,7 +39,7 @@ public class UserServiceTests {
         User savedUser = userService.save(testUser);
         assertThat(savedUser)
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Michael Akrawi", "michael.akrawi@email.com", "michael123");
+                .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
     }
 
     @Test

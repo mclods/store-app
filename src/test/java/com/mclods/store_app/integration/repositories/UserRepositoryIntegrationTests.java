@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @SpringBootTest
@@ -34,7 +33,7 @@ public class UserRepositoryIntegrationTests {
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Michael Akrawi", "michael.akrawi@email.com", "michael123");
+                .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
     }
 
     @Test
@@ -50,7 +49,7 @@ public class UserRepositoryIntegrationTests {
         // Assert User
         assertThat(foundUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Michael Akrawi", "michael.akrawi@email.com", "michael123");
+                .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
 
         // Assert Addresses
         assertThat(foundUser.get().getAddresses()).hasSize(2);
@@ -59,16 +58,16 @@ public class UserRepositoryIntegrationTests {
                         Address::getZip, Address::getState)
                 .containsExactly(
                         tuple(
-                                "Ben Yehuda Alley",
-                                "Tel Aviv - Jaffa",
-                                "123-456",
-                                "Israel"
+                                testUser.getAddresses().get(0).getStreet(),
+                                testUser.getAddresses().get(0).getCity(),
+                                testUser.getAddresses().get(0).getZip(),
+                                testUser.getAddresses().get(0).getState()
                         ),
                         tuple(
-                                "16 Yafo Street",
-                                "Jerusalem",
-                                "765-210",
-                                "Israel"
+                                testUser.getAddresses().get(1).getStreet(),
+                                testUser.getAddresses().get(1).getCity(),
+                                testUser.getAddresses().get(1).getZip(),
+                                testUser.getAddresses().get(1).getState()
                         )
                 );
 
@@ -77,10 +76,10 @@ public class UserRepositoryIntegrationTests {
                 .extracting(Profile::getBio, Profile::getPhoneNumber,
                         Profile::getDateOfBirth, Profile::getLoyaltyPoints)
                 .containsExactly(
-                        "Hi I'm Michael",
-                        "1234567890",
-                        LocalDate.parse("2025-05-27"),
-                        25
+                        testUser.getProfile().getBio(),
+                        testUser.getProfile().getPhoneNumber(),
+                        testUser.getProfile().getDateOfBirth(),
+                        testUser.getProfile().getLoyaltyPoints()
                 );
     }
 
@@ -112,7 +111,7 @@ public class UserRepositoryIntegrationTests {
         // Assert User
         assertThat(foundUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Ari Schwartz", "ari.schwartz@mailman.com", "49ari");
+                .containsExactly(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getPassword());
 
         // Assert Addresses
         assertThat(foundUser.get().getAddresses()).hasSize(1);

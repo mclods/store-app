@@ -13,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -25,26 +22,7 @@ public class UserMapperTests {
     @DisplayName("Test mapCreateUserRequestToUser generates the correct mapping")
     void testMapCreateUserRequestToUserGeneratesTheCorrectMapping()
     {
-        CreateUserRequest.CreateUserAddress createUserAddressA = TestDataUtils.testCreateUserAddressA(),
-                createUserAddressB = TestDataUtils.testCreateUserAddressB();
-        CreateUserRequest.CreateUserProfile createUserProfile = TestDataUtils.testCreateUserProfileA();
-
-        List<CreateUserRequest.CreateUserAddress> createUserAddresses = new ArrayList<>();
-        createUserAddresses.add(createUserAddressA);
-        createUserAddresses.add(createUserAddressB);
-
-        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
-        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
-
-        CreateUserRequest createUserRequest = new CreateUserRequest(
-                "Solomon Adi",
-                "solomom.islands@gz.com",
-                "passforpass123",
-                createUserAddresses,
-                tagIds,
-                createUserProfile,
-                productIds
-        );
+        CreateUserRequest createUserRequest = TestDataUtils.testCreateUserRequestWithAddressAndProfileB();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
         User mappedUser = userMapper.mapCreateUserRequestToUser(createUserRequest);
@@ -52,7 +30,7 @@ public class UserMapperTests {
         // Assert User
         assertThat(mappedUser)
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Solomon Adi", "solomom.islands@gz.com", "passforpass123");
+                .containsExactly(createUserRequest.getName(), createUserRequest.getEmail(), createUserRequest.getPassword());
 
         // Assert Addresses
         assertThat(mappedUser.getAddresses()).hasSize(2);
@@ -61,16 +39,16 @@ public class UserMapperTests {
                         Address::getZip, Address::getState)
                 .containsExactly(
                         tuple(
-                                "Ben Yehuda Alley",
-                                "Tel Aviv - Jaffa",
-                                "123-456",
-                                "Israel"
+                                createUserRequest.getAddresses().get(0).getStreet(),
+                                createUserRequest.getAddresses().get(0).getCity(),
+                                createUserRequest.getAddresses().get(0).getZip(),
+                                createUserRequest.getAddresses().get(0).getState()
                         ),
                         tuple(
-                                "14/6 Reiser Micha",
-                                "Lod",
-                                "222-111",
-                                "Israel"
+                                createUserRequest.getAddresses().get(1).getStreet(),
+                                createUserRequest.getAddresses().get(1).getCity(),
+                                createUserRequest.getAddresses().get(1).getZip(),
+                                createUserRequest.getAddresses().get(1).getState()
                         )
                 );
 
@@ -79,34 +57,17 @@ public class UserMapperTests {
                 .extracting(Profile::getBio, Profile::getPhoneNumber,
                         Profile::getDateOfBirth, Profile::getLoyaltyPoints)
                 .containsExactly(
-                        "Hi I'm Camelot",
-                        "564-231-411",
-                        LocalDate.parse("2025-05-31"),
-                        55
+                        createUserRequest.getProfile().getBio(),
+                        createUserRequest.getProfile().getPhoneNumber(),
+                        createUserRequest.getProfile().getDateOfBirth(),
+                        createUserRequest.getProfile().getLoyaltyPoints()
                 );
     }
 
     @Test
     @DisplayName("Test mapFullUpdateUserRequestToUser generates the correct mapping")
     void testMapFullUpdateUserRequestToUserGeneratesTheCorrectMapping() {
-        FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress = TestDataUtils.testFullUpdateUserAddressA();
-        FullUpdateUserRequest.FullUpdateUserProfile fullUpdateUserProfile = TestDataUtils.testFullUpdateUserProfileA();
-
-        List<FullUpdateUserRequest.FullUpdateUserAddress> fullUpdateUserAddresses = new ArrayList<>();
-        fullUpdateUserAddresses.add(fullUpdateUserAddress);
-
-        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
-        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
-
-        FullUpdateUserRequest fullUpdateUserRequest = new FullUpdateUserRequest(
-                "Solomon Adi",
-                "solomom.islands@gz.com",
-                "passforpass123",
-                fullUpdateUserAddresses,
-                tagIds,
-                fullUpdateUserProfile,
-                productIds
-        );
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
         User mappedUser = userMapper.mapFullUpdateUserRequestToUser(fullUpdateUserRequest);
@@ -114,7 +75,7 @@ public class UserMapperTests {
         // Assert User
         assertThat(mappedUser)
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly("Solomon Adi", "solomom.islands@gz.com", "passforpass123");
+                .containsExactly(fullUpdateUserRequest.getName(), fullUpdateUserRequest.getEmail(), fullUpdateUserRequest.getPassword());
 
         // Assert Addresses
         assertThat(mappedUser.getAddresses()).hasSize(1);
@@ -123,10 +84,10 @@ public class UserMapperTests {
                         Address::getZip, Address::getState)
                 .containsExactly(
                         tuple(
-                                "Ben Yehuda Alley",
-                                "Tel Aviv - Jaffa",
-                                "123-456",
-                                "Israel"
+                                fullUpdateUserRequest.getAddresses().get(0).getStreet(),
+                                fullUpdateUserRequest.getAddresses().get(0).getCity(),
+                                fullUpdateUserRequest.getAddresses().get(0).getZip(),
+                                fullUpdateUserRequest.getAddresses().get(0).getState()
                         )
                 );
 
@@ -135,10 +96,10 @@ public class UserMapperTests {
                 .extracting(Profile::getBio, Profile::getPhoneNumber,
                         Profile::getDateOfBirth, Profile::getLoyaltyPoints)
                 .containsExactly(
-                        "Hi I'm Camelot",
-                        "564-231-411",
-                        LocalDate.parse("2025-05-31"),
-                        55
+                        fullUpdateUserRequest.getProfile().getBio(),
+                        fullUpdateUserRequest.getProfile().getPhoneNumber(),
+                        fullUpdateUserRequest.getProfile().getDateOfBirth(),
+                        fullUpdateUserRequest.getProfile().getLoyaltyPoints()
                 );
     }
 }
