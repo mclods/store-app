@@ -1,5 +1,7 @@
 package com.mclods.store_app.utils;
 
+import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
+import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
 import com.mclods.store_app.domain.entities.Address;
 import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
@@ -96,5 +98,51 @@ public class TestDataUtils {
         user.addProfile(profile);
 
         return user;
+    }
+
+    public static CreateUserRequest.CreateUserAddress testCreateUserAddressA() {
+        return new CreateUserRequest.CreateUserAddress(
+                "Ben Yehuda Alley",
+                "Tel Aviv - Jaffa",
+                "123-456",
+                "Israel"
+        );
+    }
+
+    public static CreateUserRequest.CreateUserAddress testCreateUserAddressB() {
+        return new CreateUserRequest.CreateUserAddress(
+                "14/6 Reiser Micha",
+                "Lod",
+                "222-111",
+                "Israel"
+        );
+    }
+
+    public static CreateUserRequest.CreateUserProfile testCreateUserProfileA() {
+        return new CreateUserRequest.CreateUserProfile(
+                "Hi I'm Camelot",
+                "564-231-411",
+                LocalDate.parse("2025-05-31"),
+                55
+        );
+    }
+
+    public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressA() {
+        return new FullUpdateUserRequest.FullUpdateUserAddress(
+                10L,
+                "Ben Yehuda Alley",
+                "Tel Aviv - Jaffa",
+                "123-456",
+                "Israel"
+        );
+    }
+
+    public static FullUpdateUserRequest.FullUpdateUserProfile testFullUpdateUserProfileA() {
+        return new FullUpdateUserRequest.FullUpdateUserProfile(
+                "Hi I'm Camelot",
+                "564-231-411",
+                LocalDate.parse("2025-05-31"),
+                55
+        );
     }
 }
