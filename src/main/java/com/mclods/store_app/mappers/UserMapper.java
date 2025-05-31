@@ -24,13 +24,15 @@ public abstract class UserMapper {
        );
 
        // Address
-       for (CreateUserRequest.CreateUserAddress createUserAddress : createUserRequest.getAddresses()) {
-           Address address = mapCreateUserAddressToAddress(createUserAddress);
+        if(createUserRequest.getAddresses() != null) {
+            for (CreateUserRequest.CreateUserAddress createUserAddress : createUserRequest.getAddresses()) {
+                Address address = mapCreateUserAddressToAddress(createUserAddress);
 
-           if(address != null) {
-               user.addAddress(address);
-           }
-       }
+                if(address != null) {
+                    user.addAddress(address);
+                }
+            }
+        }
 
         // Profile
         Profile profile = mapCreateUserProfileToProfile(createUserRequest.getProfile());
@@ -63,11 +65,13 @@ public abstract class UserMapper {
         );
 
         // Address
-        for (FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress : fullUpdateUserRequest.getAddresses()) {
-            Address address = mapFullUpdateUserAddressToAddress(fullUpdateUserAddress);
+        if(fullUpdateUserRequest.getAddresses() != null) {
+            for (FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress : fullUpdateUserRequest.getAddresses()) {
+                Address address = mapFullUpdateUserAddressToAddress(fullUpdateUserAddress);
 
-            if(address != null) {
-                user.addAddress(address);
+                if(address != null) {
+                    user.addAddress(address);
+                }
             }
         }
 

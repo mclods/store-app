@@ -7,6 +7,7 @@ import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
 
 import java.time.LocalDate;
+import java.util.*;
 
 public class TestDataUtils {
     public static User testUserA() {
@@ -100,11 +101,44 @@ public class TestDataUtils {
         return user;
     }
 
+    public static CreateUserRequest testCreateUserRequestA() {
+        return new CreateUserRequest(
+                "Solomon Adi",
+                "solomom.islands@gz.com",
+                "passforpass123",
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public static CreateUserRequest testCreateUserRequestWithAddressAndProfileB() {
+        CreateUserRequest.CreateUserAddress createUserAddressA = testCreateUserAddressA();
+        CreateUserRequest.CreateUserAddress createUserAddressB = testCreateUserAddressB();
+        List<CreateUserRequest.CreateUserAddress> createUserAddresses = Arrays.asList(createUserAddressA, createUserAddressB);
+
+        CreateUserRequest.CreateUserProfile createUserProfile = testCreateUserProfileA();
+
+        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
+        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
+
+        return new CreateUserRequest(
+                "Solomon Adi",
+                "solomom.islands@gz.com",
+                "passforpass123",
+                createUserAddresses,
+                tagIds,
+                createUserProfile,
+                productIds
+        );
+    }
+
     public static CreateUserRequest.CreateUserAddress testCreateUserAddressA() {
         return new CreateUserRequest.CreateUserAddress(
-                "Ben Yehuda Alley",
-                "Tel Aviv - Jaffa",
-                "123-456",
+                "42 Montefiori",
+                "Tel Aviv",
+                "681-231",
                 "Israel"
         );
     }
@@ -127,19 +161,52 @@ public class TestDataUtils {
         );
     }
 
+    public static FullUpdateUserRequest testFullUpdateUserRequestA() {
+        return new FullUpdateUserRequest(
+                "Melamed Shai",
+                "shai.melamed@gmail.com",
+                "shai.starpass123",
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public static FullUpdateUserRequest testFullUpdateUserRequestWithAddressAndProfileB() {
+        FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress = testFullUpdateUserAddressA();
+        List<FullUpdateUserRequest.FullUpdateUserAddress> fullUpdateUserAddresses = new ArrayList<>();
+        fullUpdateUserAddresses.add(fullUpdateUserAddress);
+
+        FullUpdateUserRequest.FullUpdateUserProfile fullUpdateUserProfile = testFullUpdateUserProfileA();
+
+        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
+        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
+
+        return new FullUpdateUserRequest(
+                "Melamed Shai",
+                "shai.melamed@gmail.com",
+                "shai.starpass123",
+                fullUpdateUserAddresses,
+                tagIds,
+                fullUpdateUserProfile,
+                productIds
+        );
+    }
+
     public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressA() {
         return new FullUpdateUserRequest.FullUpdateUserAddress(
                 10L,
-                "Ben Yehuda Alley",
-                "Tel Aviv - Jaffa",
-                "123-456",
+                "11 Pduiim",
+                "Hod Hasharon",
+                "222-000",
                 "Israel"
         );
     }
 
     public static FullUpdateUserRequest.FullUpdateUserProfile testFullUpdateUserProfileA() {
         return new FullUpdateUserRequest.FullUpdateUserProfile(
-                "Hi I'm Camelot",
+                "Jamie Olivier",
                 "564-231-411",
                 LocalDate.parse("2025-05-31"),
                 55
