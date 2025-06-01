@@ -2,6 +2,7 @@ package com.mclods.store_app.unit.mappers;
 
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
 import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
+import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.domain.entities.Address;
 import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
@@ -22,7 +23,7 @@ public class UserMapperTests {
     @DisplayName("Test mapCreateUserRequestToUser generates the correct mapping")
     void testMapCreateUserRequestToUserGeneratesTheCorrectMapping()
     {
-        CreateUserRequest createUserRequest = TestDataUtils.testCreateUserRequestWithAddressAndProfileB();
+        CreateUserRequest createUserRequest = TestDataUtils.testCreateUserRequestWithAddressAndProfileA();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
         User mappedUser = userMapper.mapCreateUserRequestToUser(createUserRequest);
@@ -101,6 +102,46 @@ public class UserMapperTests {
                         fullUpdateUserRequest.getProfile().getPhoneNumber(),
                         fullUpdateUserRequest.getProfile().getDateOfBirth(),
                         fullUpdateUserRequest.getProfile().getLoyaltyPoints()
+                );
+    }
+
+    @Test
+    @DisplayName("Test mapPartialUpdateUserRequestToUser generates the correct mapping")
+    void testMapPartialUpdateUserRequestToUserGeneratesTheCorrectMapping() {
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestWithAddressAndProfileA();
+
+        UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+        User mappedUser = userMapper.mapPartialUpdateUserRequestToUser(partialUpdateUserRequest);
+
+        // Assert User
+        assertThat(mappedUser)
+                .extracting(User::getName, User::getEmail, User::getPassword)
+                .containsExactly(partialUpdateUserRequest.getName(), partialUpdateUserRequest.getEmail(), partialUpdateUserRequest.getPassword());
+
+        // Assert Addresses
+        assertThat(mappedUser.getAddresses()).hasSize(1);
+        assertThat(mappedUser.getAddresses())
+                .extracting(Address::getId, Address::getStreet, Address::getCity,
+                        Address::getZip, Address::getState)
+                .containsExactly(
+                        tuple(
+                                partialUpdateUserRequest.getAddresses().get(0).getId(),
+                                partialUpdateUserRequest.getAddresses().get(0).getStreet(),
+                                partialUpdateUserRequest.getAddresses().get(0).getCity(),
+                                partialUpdateUserRequest.getAddresses().get(0).getZip(),
+                                partialUpdateUserRequest.getAddresses().get(0).getState()
+                        )
+                );
+
+        // Assert Profile
+        assertThat(mappedUser.getProfile())
+                .extracting(Profile::getBio, Profile::getPhoneNumber,
+                        Profile::getDateOfBirth, Profile::getLoyaltyPoints)
+                .containsExactly(
+                        partialUpdateUserRequest.getProfile().getBio(),
+                        partialUpdateUserRequest.getProfile().getPhoneNumber(),
+                        partialUpdateUserRequest.getProfile().getDateOfBirth(),
+                        partialUpdateUserRequest.getProfile().getLoyaltyPoints()
                 );
     }
 }
