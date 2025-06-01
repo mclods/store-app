@@ -2,8 +2,11 @@ package com.mclods.store_app.controllers;
 
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
 import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
+import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.domain.dtos.user.UserResponse;
 import com.mclods.store_app.domain.entities.User;
+import com.mclods.store_app.exceptions.AddressHasMissingFieldsException;
+import com.mclods.store_app.exceptions.UserNotFoundException;
 import com.mclods.store_app.mappers.UserMapper;
 import com.mclods.store_app.services.UserService;
 import jakarta.validation.Valid;
@@ -51,6 +54,20 @@ public class UserController {
 
         User userToUpdate = userMapper.mapFullUpdateUserRequestToUser(fullUserUpdateRequest);
         User updatedUser = userService.fullUpdateUser(id, userToUpdate);
+        return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/users/{id}")
+    public ResponseEntity<UserResponse> partialUpdateUser(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid PartialUpdateUserRequest partialUpdateUserRequest
+    ) throws UserNotFoundException, AddressHasMissingFieldsException {
+        if(!userService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        User userToUpdate = userMapper.mapPartialUpdateUserRequestToUser(partialUpdateUserRequest);
+        User updatedUser = userService.partialUpdateUser(id, userToUpdate);
         return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
     }
 }

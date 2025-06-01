@@ -31,6 +31,10 @@ public class Address {
     @JoinColumn(name = "user_id")
     private User user;
 
+    public boolean isValid() {
+        return street != null && city != null && zip != null && state != null;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(this == obj) {
