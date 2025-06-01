@@ -295,11 +295,12 @@ public class UserControllerIntegrationTests {
 
         Long savedUserAddressId = testUser.getAddresses().get(0).getId();
 
-        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
-        FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress = fullUpdateUserRequest.getAddresses().get(0);
-        fullUpdateUserAddress.setId(savedUserAddressId);
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestA();
 
-        fullUpdateUserRequest.setAddresses(List.of(fullUpdateUserAddress));
+        FullUpdateUserRequest.FullUpdateUserAddress address = TestDataUtils.testFullUpdateUserAddressA();
+        address.setId(savedUserAddressId);
+
+        fullUpdateUserRequest.setAddresses(List.of(address));
 
         String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
 
@@ -331,7 +332,13 @@ public class UserControllerIntegrationTests {
         userRepository.save(testUser);
 
         Long savedUserAddressId = testUser.getAddresses().get(0).getId();
-        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
+
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestA();
+
+        FullUpdateUserRequest.FullUpdateUserAddress address = TestDataUtils.testFullUpdateUserAddressA();
+        address.setId(savedUserAddressId + 9999);
+
+        fullUpdateUserRequest.setAddresses(List.of(address));
 
         String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
 
@@ -357,12 +364,53 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
+    @DisplayName("Test full update user creates new address if provided id belongs to address of a different user")
+    void testFullUpdateUserCreatesNewAddressIfProvidedIdBelongsToAddressOfADifferentUser() throws Exception {
+        User testUserA = TestDataUtils.testUserWithAddressAndProfileA();
+        User testUserB = TestDataUtils.testUserWithAddressAndProfileB();
+
+        userRepository.save(testUserA);
+        userRepository.save(testUserB);
+
+        Long savedUserAddressIdOfADifferentUser = testUserA.getAddresses().get(0).getId();
+
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestA();
+
+        FullUpdateUserRequest.FullUpdateUserAddress address = TestDataUtils.testFullUpdateUserAddressA();
+        address.setId(savedUserAddressIdOfADifferentUser);
+
+        fullUpdateUserRequest.setAddresses(List.of(address));
+
+        String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/users/%d", testUserB.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fullUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUserB.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id", not(savedUserAddressIdOfADifferentUser))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(fullUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(fullUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(fullUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(fullUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
     @DisplayName("Test full update user updates profile if provided")
     void testFullUpdateUserUpdatesProfileIfProvided() throws Exception {
         User testUser = TestDataUtils.testUserWithAddressAndProfileB();
         userRepository.save(testUser);
 
-        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileA();
         String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
 
         mockMvc.perform(

@@ -48,20 +48,20 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test save with id saves user with same id")
-    void testSaveWithIdSavesUserWithSameId() {
+    @DisplayName("Test full update user saves user with same id")
+    void testFullUpdateUserSavesUserWithSameId() {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
         when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(profileService.exists(anyLong())).thenReturn(true);
 
-        userService.save(999L, testUser);
+        userService.fullUpdateUser(999L, testUser);
         verify(userRepository).save(argThat(user -> user.getId().equals(999L)
                 && user.getProfile().getId().equals(999L)));
     }
 
     @Test
-    @DisplayName("Test save with id cleans invalid address ids before saving")
-    void testSaveWithIdCleansInvalidAddressIdsBeforeSaving() {
+    @DisplayName("Test full update user cleans invalid address ids before saving")
+    void testFullUpdateUserCleansInvalidAddressIdsBeforeSaving() {
         User testUser = TestDataUtils.testUserA();
         Address testAddress = TestDataUtils.testAddressA();
         testAddress.setId(1L);
@@ -69,9 +69,9 @@ public class UserServiceTests {
         testUser.addAddress(testAddress);
 
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(addressService.exists(anyLong())).thenReturn(false);
+        when(addressService.existsWithUserId(anyLong(), anyLong())).thenReturn(false);
 
-        userService.save(999L, testUser);
+        userService.fullUpdateUser(999L, testUser);
         verify(userRepository).save(argThat(user -> user.getAddresses().get(0).getId() == null));
     }
 

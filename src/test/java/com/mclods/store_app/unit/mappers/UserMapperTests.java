@@ -67,7 +67,7 @@ public class UserMapperTests {
     @Test
     @DisplayName("Test mapFullUpdateUserRequestToUser generates the correct mapping")
     void testMapFullUpdateUserRequestToUserGeneratesTheCorrectMapping() {
-        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileB();
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileA();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
         User mappedUser = userMapper.mapFullUpdateUserRequestToUser(fullUpdateUserRequest);
@@ -80,10 +80,11 @@ public class UserMapperTests {
         // Assert Addresses
         assertThat(mappedUser.getAddresses()).hasSize(1);
         assertThat(mappedUser.getAddresses())
-                .extracting(Address::getStreet, Address::getCity,
+                .extracting(Address::getId, Address::getStreet, Address::getCity,
                         Address::getZip, Address::getState)
                 .containsExactly(
                         tuple(
+                                fullUpdateUserRequest.getAddresses().get(0).getId(),
                                 fullUpdateUserRequest.getAddresses().get(0).getStreet(),
                                 fullUpdateUserRequest.getAddresses().get(0).getCity(),
                                 fullUpdateUserRequest.getAddresses().get(0).getZip(),

@@ -50,7 +50,7 @@ public class UserController {
         }
 
         User userToUpdate = userMapper.mapFullUpdateUserRequestToUser(fullUserUpdateRequest);
-        User updatedUser = userService.save(id, userToUpdate);
+        User updatedUser = userService.fullUpdateUser(id, userToUpdate);
         return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
     }
 }

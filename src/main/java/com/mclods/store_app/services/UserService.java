@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserService {
     User save(User user);
-    User save(Long id, User user);
+    User fullUpdateUser(Long id, User user);
     Optional<User> findOne(Long id);
     boolean exists(Long id);
 }

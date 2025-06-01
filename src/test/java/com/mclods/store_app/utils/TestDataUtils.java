@@ -190,8 +190,9 @@ public class TestDataUtils {
         );
     }
 
-    public static FullUpdateUserRequest testFullUpdateUserRequestWithAddressAndProfileB() {
+    public static FullUpdateUserRequest testFullUpdateUserRequestWithAddressAndProfileA() {
         FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress = testFullUpdateUserAddressA();
+
         List<FullUpdateUserRequest.FullUpdateUserAddress> fullUpdateUserAddresses = new ArrayList<>();
         fullUpdateUserAddresses.add(fullUpdateUserAddress);
 

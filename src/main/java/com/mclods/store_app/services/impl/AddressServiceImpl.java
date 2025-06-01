@@ -16,4 +16,9 @@ public class AddressServiceImpl implements AddressService {
     public boolean exists(Long id) {
         return addressRepository.existsById(id);
     }
+
+    @Override
+    public boolean existsWithUserId(Long addressId, Long userId) {
+        return addressRepository.existsByIdAndUserId(addressId, userId);
+    }
 }
