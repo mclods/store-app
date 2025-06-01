@@ -221,6 +221,16 @@ public class TestDataUtils {
         );
     }
 
+    public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressB() {
+        return new FullUpdateUserRequest.FullUpdateUserAddress(
+                12L,
+                "Pob 13078 61130",
+                "Tel Aviv",
+                "311-912",
+                "Israel"
+        );
+    }
+
     public static FullUpdateUserRequest.FullUpdateUserProfile testFullUpdateUserProfileA() {
         return new FullUpdateUserRequest.FullUpdateUserProfile(
                 "Jamie Olivier",
