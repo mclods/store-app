@@ -1,6 +1,7 @@
 package com.mclods.store_app.domain.dtos.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mclods.store_app.validators.UniqueIds;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class FullUpdateUserRequest {
     private String password;
 
     @Valid
+    @UniqueIds(message = "Address Ids must be unique")
     private List<FullUpdateUserAddress> addresses = new ArrayList<>();
 
     private Set<Integer> tagsIds = new HashSet<>();
