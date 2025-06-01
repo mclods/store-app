@@ -1,7 +1,6 @@
 package com.mclods.store_app.services.impl;
 
 import com.mclods.store_app.domain.entities.Address;
-import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.repositories.UserRepository;
 import com.mclods.store_app.services.AddressService;
@@ -9,7 +8,6 @@ import com.mclods.store_app.services.ProfileService;
 import com.mclods.store_app.services.UserService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,24 +28,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(Long id, User user) {
+    public User fullUpdateUser(Long id, User user) {
         user.setId(id);
 
         // Clear Invalid Address Ids
-        List<Address> addresses = user.getAddresses();
-        if(addresses != null) {
-            for(Address address : addresses) {
-                if(address.getId() != null && !addressService.exists(address.getId())) {
-                    address.setId(null);
-                }
+        Optional.ofNullable(user.getAddresses()).ifPresent(addresses -> {
+            for (Address address : addresses) {
+                Optional.ofNullable(address.getId()).ifPresent(addressId -> {
+                    if(!addressService.existsWithUserId(addressId, id)) {
+                        address.setId(null);
+                    }
+                });
             }
-        }
+        });
 
-        Profile userProfile = user.getProfile();
-        if(userProfile != null && profileService.exists(id)) {
-            userProfile.setId(id);
-            user.addProfile(userProfile);
-        }
+        Optional.ofNullable(user.getProfile()).ifPresent(profile -> {
+            if(profileService.exists(id)) {
+                profile.setId(id);
+            }
+        });
 
         return userRepository.save(user);
     }
