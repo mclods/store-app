@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.not;
@@ -414,8 +415,6 @@ public class UserControllerIntegrationTests {
                 }
                 """;
 
-        String expectedResponse = "{\"addresses[0].city\":\"city cannot be null\",\"addresses[0].state\":\"state cannot be null\",\"addresses[0].street\":\"street cannot be null\",\"addresses[0].zip\":\"zip cannot be null\"}";
-
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -423,7 +422,39 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.status().isBadRequest()
         ).andExpect(
-                MockMvcResultMatchers.content().string(expectedResponse)
+                MockMvcResultMatchers.jsonPath("$['addresses[0].street']").value("street cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$['addresses[0].city']").value("city cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$['addresses[0].zip']").value("zip cannot be null")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$['addresses[0].state']").value("state cannot be null")
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user fails with status code 400 Bad Request when address body has duplicate ids")
+    void testFullUpdateUserFailsWithStatusCode400BadRequestWhenAddressBodyHasDuplicateIds() throws Exception {
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestA();
+
+        FullUpdateUserRequest.FullUpdateUserAddress addressA = TestDataUtils.testFullUpdateUserAddressA();
+        FullUpdateUserRequest.FullUpdateUserAddress addressB = TestDataUtils.testFullUpdateUserAddressB();
+
+        addressA.setId(1L);
+        addressB.setId(1L);
+
+        fullUpdateUserRequest.setAddresses(Arrays.asList(addressA, addressB));
+
+        String testUserJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testUserJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isBadRequest()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").value("Address Ids must be unique")
         );
     }
 }
