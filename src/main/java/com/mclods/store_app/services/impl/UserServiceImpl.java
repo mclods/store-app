@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
                                 Optional.ofNullable(addressToUpdate.getZip())
                                         .ifPresent(existingAddress::setZip);
                                 Optional.ofNullable(addressToUpdate.getState())
-                                        .ifPresent(existingAddress::setZip);
+                                        .ifPresent(existingAddress::setState);
                             }, () -> {
                                 if (addressToUpdate.isValid()) {
                                     addressToUpdate.setId(null);
@@ -97,10 +97,10 @@ public class UserServiceImpl implements UserService {
                 });
 
                 // Update Profile
-                Optional.ofNullable(user.getProfile()).ifPresent(profileToUpdate -> {
-                    profileToUpdate.setId(id);
-
+                Optional.ofNullable(user.getProfile()).ifPresent(profileToUpdate ->
                     Optional.ofNullable(existingUser.getProfile()).ifPresentOrElse(existingProfile -> {
+                        profileToUpdate.setId(id);
+
                         Optional.ofNullable(profileToUpdate.getBio())
                                 .ifPresent(existingProfile::setBio);
                         Optional.ofNullable(profileToUpdate.getPhoneNumber())
@@ -112,8 +112,8 @@ public class UserServiceImpl implements UserService {
                     }, () -> {
                         profileToUpdate.setId(null);
                         existingUser.addProfile(profileToUpdate);
-                    });
-                });
+                    })
+                );
 
                 return userRepository.save(existingUser);
             }).orElseThrow(() -> new UserNotFoundException(id));
