@@ -26,4 +26,11 @@ public class GlobalExceptionHandler {
                 .badRequest()
                 .body(Map.of("error", "Invalid input type: " + ex.getMessage()));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleException(Exception ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("error", ex.getMessage()));
+    }
 }

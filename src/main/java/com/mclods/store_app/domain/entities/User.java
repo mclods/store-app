@@ -3,10 +3,7 @@ package com.mclods.store_app.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -92,6 +89,18 @@ public class User {
     public void removeAddress(Address address) {
         address.setUser(null);
         addresses.remove(address);
+    }
+
+    public Optional<Address> findAddress(Address address) {
+        Address foundAddress = null;
+        for(Address userAddress : addresses) {
+            if(userAddress.equals(address)) {
+                foundAddress = userAddress;
+                break;
+            }
+        }
+
+        return Optional.ofNullable(foundAddress);
     }
 
     public void addProfile(Profile profile) {

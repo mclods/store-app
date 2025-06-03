@@ -2,6 +2,7 @@ package com.mclods.store_app.utils;
 
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
 import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
+import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.domain.entities.Address;
 import com.mclods.store_app.domain.entities.Profile;
 import com.mclods.store_app.domain.entities.User;
@@ -34,6 +35,19 @@ public class TestDataUtils {
                 null,
                 null
         );
+    }
+
+    public static User partiallyUpdatedUserA() {
+        User user = new User();
+        user.setName("Chemical Michael");
+        return user;
+    }
+
+    public static User partiallyUpdatedUserB() {
+        User user = new User();
+        user.setName("Stormy Night");
+        user.setEmail("fortnight.storm@mail.com");
+        return user;
     }
 
     public static Address testAddressA() {
@@ -94,14 +108,10 @@ public class TestDataUtils {
     public static User testUserWithAddressAndProfileA() {
         User user = testUserA();
 
-        Address addressA = testAddressA();
-        user.addAddress(addressA);
+        user.addAddress(testAddressA());
+        user.addAddress(testAddressB());
 
-        Address addressB = testAddressB();
-        user.addAddress(addressB);
-
-        Profile profile = testProfileA();
-        user.addProfile(profile);
+        user.addProfile(testProfileA());
 
         return user;
     }
@@ -109,11 +119,28 @@ public class TestDataUtils {
     public static User testUserWithAddressAndProfileB() {
         User user = testUserB();
 
-        Address addressA = testAddressC();
-        user.addAddress(addressA);
+        user.addAddress(testAddressC());
+        user.addProfile(testProfileB());
 
-        Profile profile = testProfileB();
-        user.addProfile(profile);
+        return user;
+    }
+
+    public static User testPartiallyUpdatedUserWithAddressAndProfileA() {
+        User user = partiallyUpdatedUserA();
+
+        user.addAddress(testAddressA());
+        user.addAddress(testAddressB());
+
+        user.addProfile(testProfileA());
+
+        return user;
+    }
+
+    public static User testPartiallyUpdatedUserWithAddressAndProfileB() {
+        User user = partiallyUpdatedUserB();
+
+        user.addAddress(testAddressA());
+        user.addProfile(testProfileA());
 
         return user;
     }
@@ -130,13 +157,7 @@ public class TestDataUtils {
         );
     }
 
-    public static CreateUserRequest testCreateUserRequestWithAddressAndProfileB() {
-        CreateUserRequest.CreateUserAddress createUserAddressA = testCreateUserAddressA();
-        CreateUserRequest.CreateUserAddress createUserAddressB = testCreateUserAddressB();
-        List<CreateUserRequest.CreateUserAddress> createUserAddresses = Arrays.asList(createUserAddressA, createUserAddressB);
-
-        CreateUserRequest.CreateUserProfile createUserProfile = testCreateUserProfileA();
-
+    public static CreateUserRequest testCreateUserRequestWithAddressAndProfileA() {
         Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
         Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
 
@@ -144,9 +165,9 @@ public class TestDataUtils {
                 "Solomon Adi",
                 "solomom.islands@gz.com",
                 "passforpass123",
-                createUserAddresses,
+                Arrays.asList(testCreateUserAddressA(), testCreateUserAddressB()),
                 tagIds,
-                createUserProfile,
+                testCreateUserProfileA(),
                 productIds
         );
     }
@@ -191,13 +212,6 @@ public class TestDataUtils {
     }
 
     public static FullUpdateUserRequest testFullUpdateUserRequestWithAddressAndProfileA() {
-        FullUpdateUserRequest.FullUpdateUserAddress fullUpdateUserAddress = testFullUpdateUserAddressA();
-
-        List<FullUpdateUserRequest.FullUpdateUserAddress> fullUpdateUserAddresses = new ArrayList<>();
-        fullUpdateUserAddresses.add(fullUpdateUserAddress);
-
-        FullUpdateUserRequest.FullUpdateUserProfile fullUpdateUserProfile = testFullUpdateUserProfileA();
-
         Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
         Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
 
@@ -205,9 +219,9 @@ public class TestDataUtils {
                 "Melamed Shai",
                 "shai.melamed@gmail.com",
                 "shai.starpass123",
-                fullUpdateUserAddresses,
+                List.of(testFullUpdateUserAddressA()),
                 tagIds,
-                fullUpdateUserProfile,
+                testFullUpdateUserProfileA(),
                 productIds
         );
     }
@@ -239,5 +253,55 @@ public class TestDataUtils {
                 LocalDate.parse("2025-05-31"),
                 55
         );
+    }
+
+    public static PartialUpdateUserRequest testPartialUpdateUserRequestA() {
+        return new PartialUpdateUserRequest(
+                "Crazy Toon",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public static PartialUpdateUserRequest.PartialUpdateUserAddress testPartialUpdateUserAddressA() {
+        return new PartialUpdateUserRequest.PartialUpdateUserAddress(
+                10L,
+                "17 Haoman",
+                "Jerusalem",
+                "2311-1",
+                "Israel"
+        );
+    }
+
+    public static PartialUpdateUserRequest.PartialUpdateUserAddress testPartialUpdateUserAddressB() {
+        return new PartialUpdateUserRequest.PartialUpdateUserAddress(
+                20L,
+                "142 Iben Gabirol",
+                null,
+                null,
+                "Israel"
+        );
+    }
+
+    public static PartialUpdateUserRequest.PartialUpdateUserProfile testPartialUpdateUserProfileA() {
+        return new PartialUpdateUserRequest.PartialUpdateUserProfile(
+                "I'm an Ingenious Person",
+                null,
+                LocalDate.parse("2025-06-02"),
+                21
+        );
+    }
+
+    public static PartialUpdateUserRequest testPartialUpdateUserRequestWithAddressAndProfileA() {
+        PartialUpdateUserRequest partialUpdateUserRequest = testPartialUpdateUserRequestA();
+
+        partialUpdateUserRequest.setAddresses(List.of(testPartialUpdateUserAddressA()));
+        partialUpdateUserRequest.setProfile(testPartialUpdateUserProfileA());
+
+        return partialUpdateUserRequest;
     }
 }

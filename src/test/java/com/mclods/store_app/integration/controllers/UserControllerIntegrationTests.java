@@ -3,6 +3,7 @@ package com.mclods.store_app.integration.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mclods.store_app.domain.dtos.user.CreateUserRequest;
 import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
+import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.repositories.UserRepository;
 import com.mclods.store_app.utils.TestDataUtils;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 
 @SpringBootTest
@@ -84,6 +86,59 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
+        );
+    }
+
+    @Test
+    @DisplayName("Test create user creates user with address and profile if provided")
+    void testCreateUserCreatesUserWithAddressAndProfileIfProvided() throws Exception {
+        CreateUserRequest createUserRequest = TestDataUtils.testCreateUserRequestWithAddressAndProfileA();
+        String createUserRequestJson = objectMapper.writeValueAsString(createUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(createUserRequest.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.email").value(createUserRequest.getEmail())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.password").value(createUserRequest.getPassword())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(2))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(createUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(createUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(createUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(createUserRequest.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].street").value(createUserRequest.getAddresses().get(1).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].city").value(createUserRequest.getAddresses().get(1).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].zip").value(createUserRequest.getAddresses().get(1).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(createUserRequest.getAddresses().get(1).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(createUserRequest.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(createUserRequest.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(createUserRequest.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(createUserRequest.getProfile().getLoyaltyPoints())
         );
     }
 
@@ -250,8 +305,48 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test full update user removes addresses and profile when its not provided")
-    void testFullUpdateUserRemovesAddressesAndProfileWhenItsNotProvided() throws Exception {
+    @DisplayName("Test full update user updates user and adds new address and profile if provided")
+    void testFullUpdateUserUpdatesUserAndAddsNewAddressAndProfileIfProvided() throws Exception {
+        User testUser = TestDataUtils.testUserA();
+        userRepository.save(testUser);
+
+        FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileA();
+        String fullUpdateUserRequestJson = objectMapper.writeValueAsString(fullUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(fullUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(fullUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(fullUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(fullUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(fullUpdateUserRequest.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(fullUpdateUserRequest.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(fullUpdateUserRequest.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(fullUpdateUserRequest.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(fullUpdateUserRequest.getProfile().getLoyaltyPoints())
+        );
+    }
+
+    @Test
+    @DisplayName("Test full update user updates user and removes addresses and profile when its not provided")
+    void testFullUpdateUserUpdatesUserAndRemovesAddressesAndProfileWhenItsNotProvided() throws Exception {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
         userRepository.save(testUser);
 
@@ -313,6 +408,8 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isArray()
         ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
+        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[0].id").value(savedUserAddressId)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(fullUpdateUserRequest.getAddresses().get(0).getStreet())
@@ -350,6 +447,8 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[0].id", not(savedUserAddressId))
         ).andExpect(
@@ -391,6 +490,8 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.id").value(testUserB.getId())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[0].id", not(savedUserAddressIdOfADifferentUser))
         ).andExpect(
@@ -503,6 +604,369 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.status().isBadRequest()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").value("Address Ids must be unique")
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user succeeds with status code 200 Ok")
+    void testPartialUpdateUserSucceedsWithStatusCode200Ok() throws Exception {
+        User testUser = TestDataUtils.testUserA();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user fails with status code 404 Not Found when user does not exist")
+    void testPartialUpdateUserFailsWithStatusCode404NotFoundWhenUserDoesNotExist() throws Exception {
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", 9999))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user partially updates the user")
+    void testPartialUpdateUserPartiallyUpdatesTheUser() throws Exception {
+        User testUser = TestDataUtils.testUserA();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(partialUpdateUserRequest.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.email").value(testUser.getEmail())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.password").value(testUser.getPassword())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.tags").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user updates user and adds new address and profile if provided")
+    void testPartialUpdateUserUpdatesUserAndAddsNewAddressAndProfileIfProvided() throws Exception {
+        User testUser = TestDataUtils.testUserA();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestWithAddressAndProfileA();
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(partialUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(partialUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(partialUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(partialUpdateUserRequest.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(partialUpdateUserRequest.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(partialUpdateUserRequest.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(partialUpdateUserRequest.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(partialUpdateUserRequest.getProfile().getLoyaltyPoints())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user creates new address if address id is not provided")
+    void testPartialUpdateUserCreatesNewAddressIfAddressIdIsNotProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+
+        PartialUpdateUserRequest.PartialUpdateUserAddress address = TestDataUtils.testPartialUpdateUserAddressA();
+        address.setId(null);
+
+        partialUpdateUserRequest.setAddresses(List.of(address));
+
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(partialUpdateUserRequest.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(2))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").value(testUser.getAddresses().get(0).getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(testUser.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(testUser.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(testUser.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(testUser.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].street").value(partialUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].city").value(partialUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].zip").value(partialUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(partialUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user partially updates existing address if address id is provided")
+    void testPartialUpdateUserPartiallyUpdatesExistingAddressIfAddressIdIsProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        Long savedUserAddressId = testUser.getAddresses().get(0).getId();
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+
+        PartialUpdateUserRequest.PartialUpdateUserAddress address = new PartialUpdateUserRequest.PartialUpdateUserAddress(
+                savedUserAddressId,
+                "Camac Street",
+                null,
+                null,
+                null
+        );
+        partialUpdateUserRequest.setAddresses(List.of(address));
+
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(1))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").value(savedUserAddressId)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value("Camac Street")
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(testUser.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(testUser.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(testUser.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user creates new address if correct address id is not provided")
+    void testPartialUpdateUserCreatesNewAddressIfCorrectAddressIdIsNotProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        Long savedUserAddressId = testUser.getAddresses().get(0).getId();
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+
+        PartialUpdateUserRequest.PartialUpdateUserAddress address = TestDataUtils.testPartialUpdateUserAddressA();
+        address.setId(savedUserAddressId + 9999);
+
+        partialUpdateUserRequest.setAddresses(List.of(address));
+
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUser.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(2))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").value(savedUserAddressId)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(testUser.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(testUser.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(testUser.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(testUser.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].id").isNumber()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].street").value(partialUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].city").value(partialUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].zip").value(partialUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(partialUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user creates new address if provided id belongs to address of a different user")
+    void testPartialUpdateUserCreatesNewAddressIfProvidedIdBelongsToAddressOfADifferentUser() throws Exception {
+        User testUserA = TestDataUtils.testUserWithAddressAndProfileA();
+        User testUserB = TestDataUtils.testUserWithAddressAndProfileB();
+
+        userRepository.save(testUserA);
+        userRepository.save(testUserB);
+
+        Long savedUserAddressIdOfADifferentUser = testUserA.getAddresses().get(0).getId();
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+
+        PartialUpdateUserRequest.PartialUpdateUserAddress address = TestDataUtils.testPartialUpdateUserAddressA();
+        address.setId(savedUserAddressIdOfADifferentUser);
+
+        partialUpdateUserRequest.setAddresses(List.of(address));
+
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUserB.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(testUserB.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses", hasSize(2))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].id").value(testUserB.getAddresses().get(0).getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].street").value(testUserB.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].city").value(testUserB.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].zip").value(testUserB.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[0].state").value(testUserB.getAddresses().get(0).getState())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].id", not(savedUserAddressIdOfADifferentUser))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].street").value(partialUpdateUserRequest.getAddresses().get(0).getStreet())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].city").value(partialUpdateUserRequest.getAddresses().get(0).getCity())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].zip").value(partialUpdateUserRequest.getAddresses().get(0).getZip())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(partialUpdateUserRequest.getAddresses().get(0).getState())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user updates profile if provided")
+    void testPartialUpdateUserUpdatesProfileIfProvided() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestWithAddressAndProfileA();
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile").isNotEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.bio").value(partialUpdateUserRequest.getProfile().getBio())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(testUser.getProfile().getPhoneNumber())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(partialUpdateUserRequest.getProfile().getDateOfBirth().toString())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(partialUpdateUserRequest.getProfile().getLoyaltyPoints())
+        );
+    }
+
+    @Test
+    @DisplayName("Test partial update user fails with status code 400 Bad Request if address id is not provided and address has missing fields")
+    void testPartialUpdateUserFailsWithStatusCode400BadRequestIfAddressIdIsNotProvidedAndAddressHasMissingFields() throws Exception {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileB();
+        userRepository.save(testUser);
+
+        PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
+
+        PartialUpdateUserRequest.PartialUpdateUserAddress address = new PartialUpdateUserRequest.PartialUpdateUserAddress(
+                null,
+                null,
+                "Tel Aviv - Jaffa",
+                "123-456",
+                "Israel"
+        );
+
+        partialUpdateUserRequest.setAddresses(List.of(address));
+
+        String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch(String.format("/users/%d", testUser.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(partialUpdateUserRequestJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.error").value("Address (id=null, street=null, city=Tel Aviv - Jaffa, zip=123-456, state=Israel) has missing fields.")
         );
     }
 }
