@@ -37,6 +37,19 @@ public class TestDataUtils {
         );
     }
 
+    public static User partiallyUpdatedUserA() {
+        User user = new User();
+        user.setName("Chemical Michael");
+        return user;
+    }
+
+    public static User partiallyUpdatedUserB() {
+        User user = new User();
+        user.setName("Stormy Night");
+        user.setEmail("fortnight.storm@mail.com");
+        return user;
+    }
+
     public static Address testAddressA() {
         return new Address(
                 null,
@@ -107,8 +120,27 @@ public class TestDataUtils {
         User user = testUserB();
 
         user.addAddress(testAddressC());
-
         user.addProfile(testProfileB());
+
+        return user;
+    }
+
+    public static User testPartiallyUpdatedUserWithAddressAndProfileA() {
+        User user = partiallyUpdatedUserA();
+
+        user.addAddress(testAddressA());
+        user.addAddress(testAddressB());
+
+        user.addProfile(testProfileA());
+
+        return user;
+    }
+
+    public static User testPartiallyUpdatedUserWithAddressAndProfileB() {
+        User user = partiallyUpdatedUserB();
+
+        user.addAddress(testAddressA());
+        user.addProfile(testProfileA());
 
         return user;
     }

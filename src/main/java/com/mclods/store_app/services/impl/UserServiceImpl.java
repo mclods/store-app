@@ -58,6 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User partialUpdateUser(Long id, User user) throws UserNotFoundException, AddressHasMissingFieldsException {
         try {
+            user.setId(id);
+
             return userRepository.findById(id).map(existingUser -> {
                 Optional.ofNullable(user.getName()).ifPresent(existingUser::setName);
                 Optional.ofNullable(user.getEmail()).ifPresent(existingUser::setEmail);
@@ -67,30 +69,30 @@ public class UserServiceImpl implements UserService {
                 Optional.ofNullable(user.getAddresses()).ifPresent(addressesToUpdate -> {
                     for (Address addressToUpdate : addressesToUpdate) {
                         Optional.ofNullable(addressToUpdate.getId()).ifPresentOrElse(addressId ->
-                                existingUser.findAddress(addressToUpdate).ifPresentOrElse(existingAddress -> {
-                                    Optional.ofNullable(addressToUpdate.getStreet())
-                                            .ifPresent(existingAddress::setStreet);
-                                    Optional.ofNullable(addressToUpdate.getCity())
-                                            .ifPresent(existingAddress::setCity);
-                                    Optional.ofNullable(addressToUpdate.getZip())
-                                            .ifPresent(existingAddress::setZip);
-                                    Optional.ofNullable(addressToUpdate.getState())
-                                            .ifPresent(existingAddress::setZip);
-                                }, () -> {
-                                    if (addressToUpdate.isValid()) {
-                                        addressToUpdate.setId(null);
-                                        existingUser.addAddress(addressToUpdate);
-                                    } else {
-                                        throw new RuntimeException(new AddressHasMissingFieldsException(addressToUpdate));
-                                    }
-                                })
-                            , () -> {
+                            existingUser.findAddress(addressToUpdate).ifPresentOrElse(existingAddress -> {
+                                Optional.ofNullable(addressToUpdate.getStreet())
+                                        .ifPresent(existingAddress::setStreet);
+                                Optional.ofNullable(addressToUpdate.getCity())
+                                        .ifPresent(existingAddress::setCity);
+                                Optional.ofNullable(addressToUpdate.getZip())
+                                        .ifPresent(existingAddress::setZip);
+                                Optional.ofNullable(addressToUpdate.getState())
+                                        .ifPresent(existingAddress::setZip);
+                            }, () -> {
                                 if (addressToUpdate.isValid()) {
+                                    addressToUpdate.setId(null);
                                     existingUser.addAddress(addressToUpdate);
                                 } else {
                                     throw new RuntimeException(new AddressHasMissingFieldsException(addressToUpdate));
                                 }
-                            });
+                            })
+                    , () -> {
+                        if (addressToUpdate.isValid()) {
+                            existingUser.addAddress(addressToUpdate);
+                        } else {
+                            throw new RuntimeException(new AddressHasMissingFieldsException(addressToUpdate));
+                        }
+                    });
                     }
                 });
 
