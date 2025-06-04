@@ -18,10 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -324,6 +324,26 @@ public class UserServiceTests {
 
         Optional<User> foundUser = userService.findOne(1L);
         assertThat(foundUser).isPresent();
+    }
+
+    @Test
+    @DisplayName("Test find all returns all users")
+    void testFindAllReturnsAllUsers() {
+        when(userRepository.findAll()).thenReturn(List.of(TestDataUtils.testUserA(), TestDataUtils.testUserB()));
+
+        List<User> foundUsers = userService.findAll();
+        assertThat(foundUsers)
+                .usingRecursiveFieldByFieldElementComparator()
+                .containsAnyElementsOf(List.of(TestDataUtils.testUserA(), TestDataUtils.testUserB()));
+    }
+
+    @Test
+    @DisplayName("Test find all returns empty list")
+    void testFindAllReturnsEmptyList() {
+        when(userRepository.findAll()).thenReturn(List.of());
+
+        List<User> foundUsers = userService.findAll();
+        assertThat(foundUsers).isEmpty();
     }
 
     @Test

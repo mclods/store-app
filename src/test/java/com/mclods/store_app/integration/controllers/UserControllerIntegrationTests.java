@@ -969,4 +969,37 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.error").value("Address (id=null, street=null, city=Tel Aviv - Jaffa, zip=123-456, state=Israel) has missing fields.")
         );
     }
+
+    @Test
+    @DisplayName("Test find all users succeeds with status code 200 and returns all users")
+    void testFindAllUsersSucceedsWithStatusCode200AndReturnsAllUsers() throws Exception {
+        userRepository.save(TestDataUtils.testUserA());
+        userRepository.save(TestDataUtils.testUserB());
+
+        String expectedJson = "[{\"id\":13,\"name\":\"Michael Akrawi\",\"email\":\"michael.akrawi@email.com\",\"password\":\"michael123\",\"addresses\":[],\"tags\":[],\"profile\":null,\"wishlist\":[]},{\"id\":14,\"name\":\"Ari Schwartz\",\"email\":\"ari.schwartz@mailman.com\",\"password\":\"49ari\",\"addresses\":[],\"tags\":[],\"profile\":null,\"wishlist\":[]}]";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.content().string(expectedJson)
+        );
+    }
+
+    @Test
+    @DisplayName("Test find all users returns empty list when no users exist")
+    void testFindAllUsersReturnsEmptyListWhenNoUsersExist() throws Exception {
+        String expectedJson = "[]";
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.content().string(expectedJson)
+        );
+    }
 }
