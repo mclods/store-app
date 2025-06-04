@@ -1,0 +1,740 @@
+{
+	"info": {
+		"_postman_id": "4371fa2d-5428-4e85-8552-1f5eb44d6e65",
+		"name": "store-app-apis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45002733",
+		"_collection_link": "https://mclods-4498530.postman.co/workspace/mclods's-Workspace~a67fe4d4-b37f-4af7-8dbe-acef24b1e28f/collection/45002733-4371fa2d-5428-4e85-8552-1f5eb44d6e65?action=share&source=collection_link&creator=45002733"
+	},
+	"item": [
+		{
+			"name": "create-users",
+			"item": [
+				{
+					"name": "create-user-1",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Michael Akrawi\",\r\n    \"email\": \"michael.akrawi@mail.com\",\r\n    \"password\": \"michael236\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"Ben Yehuda Alley\",\r\n            \"city\": \"Tel Aviv - Jaffa\",\r\n            \"zip\": \"123-456\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"16 Yafo Street\",\r\n            \"city\": \"Jerusalem\",\r\n            \"zip\": \"765-210\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Hi I'm Michael\",\r\n        \"phoneNumber\": \"1234567890\",\r\n        \"dateOfBirth\": \"2025-05-27\",\r\n        \"loyaltyPoints\": 25\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create-user-1",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Michael Akrawi\",\r\n    \"email\": \"michael.akrawi@mail.com\",\r\n    \"password\": \"michael236\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"Ben Yehuda Alley\",\r\n            \"city\": \"Tel Aviv - Jaffa\",\r\n            \"zip\": \"123-456\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"16 Yafo Street\",\r\n            \"city\": \"Jerusalem\",\r\n            \"zip\": \"765-210\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Hi I'm Michael\",\r\n        \"phoneNumber\": \"1234567890\",\r\n        \"dateOfBirth\": \"2025-05-27\",\r\n        \"loyaltyPoints\": 25\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 04 Jun 2025 19:58:53 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Michael Akrawi\",\n    \"email\": \"michael.akrawi@mail.com\",\n    \"password\": \"michael236\",\n    \"addresses\": [\n        {\n            \"id\": 1,\n            \"street\": \"Ben Yehuda Alley\",\n            \"city\": \"Tel Aviv - Jaffa\",\n            \"zip\": \"123-456\",\n            \"state\": \"Israel\"\n        },\n        {\n            \"id\": 2,\n            \"street\": \"16 Yafo Street\",\n            \"city\": \"Jerusalem\",\n            \"zip\": \"765-210\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Hi I'm Michael\",\n        \"phoneNumber\": \"1234567890\",\n        \"dateOfBirth\": \"2025-05-27\",\n        \"loyaltyPoints\": 25\n    },\n    \"wishlist\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "create-user-2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Shai Melamed\",\r\n    \"email\": \"melamed.rocks@mailman.com\",\r\n    \"password\": \"shai269\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"4 Hamatechet\",\r\n            \"city\": \"Hadera\",\r\n            \"zip\": \"541-000\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Melameds are the best.\",\r\n        \"phoneNumber\": \"7771230861\",\r\n        \"dateOfBirth\": \"2025-05-12\",\r\n        \"loyaltyPoints\": 3\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create-user-2",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Shai Melamed\",\r\n    \"email\": \"melamed.rocks@mailman.com\",\r\n    \"password\": \"shai269\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"4 Hamatechet\",\r\n            \"city\": \"Hadera\",\r\n            \"zip\": \"541-000\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Melameds are the best.\",\r\n        \"phoneNumber\": \"7771230861\",\r\n        \"dateOfBirth\": \"2025-05-12\",\r\n        \"loyaltyPoints\": 3\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 04 Jun 2025 19:59:22 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 2,\n    \"name\": \"Shai Melamed\",\n    \"email\": \"melamed.rocks@mailman.com\",\n    \"password\": \"shai269\",\n    \"addresses\": [\n        {\n            \"id\": 3,\n            \"street\": \"4 Hamatechet\",\n            \"city\": \"Hadera\",\n            \"zip\": \"541-000\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Melameds are the best.\",\n        \"phoneNumber\": \"7771230861\",\n        \"dateOfBirth\": \"2025-05-12\",\n        \"loyaltyPoints\": 3\n    },\n    \"wishlist\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "create-user-3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Yaniv Yaron\",\r\n    \"email\": \"yaniv.yaron@hotmail.com\",\r\n    \"password\": \"redmond123\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"19 Saharov David\",\r\n            \"city\": \"Rishon Lezion\",\r\n            \"zip\": \"231-891\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"M. Lamar 2-53 y T. Ordóñez\",\r\n            \"city\": \"Azuay\",\r\n            \"zip\": \"541012\",\r\n            \"state\": \"Cuenca\"\r\n        },\r\n        {\r\n            \"street\": \"Av Juan Tanca Marengo Km 1.5 C.C. Sepropisa Local 19\",\r\n            \"city\": \"Guayas\",\r\n            \"zip\": \"311-091\",\r\n            \"state\": \"Guayaquil\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create-user-3",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Yaniv Yaron\",\r\n    \"email\": \"yaniv.yaron@hotmail.com\",\r\n    \"password\": \"redmond123\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"19 Saharov David\",\r\n            \"city\": \"Rishon Lezion\",\r\n            \"zip\": \"231-891\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"M. Lamar 2-53 y T. Ordóñez\",\r\n            \"city\": \"Azuay\",\r\n            \"zip\": \"541012\",\r\n            \"state\": \"Cuenca\"\r\n        },\r\n        {\r\n            \"street\": \"Av Juan Tanca Marengo Km 1.5 C.C. Sepropisa Local 19\",\r\n            \"city\": \"Guayas\",\r\n            \"zip\": \"311-091\",\r\n            \"state\": \"Guayaquil\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 04 Jun 2025 19:59:28 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"name\": \"Yaniv Yaron\",\n    \"email\": \"yaniv.yaron@hotmail.com\",\n    \"password\": \"redmond123\",\n    \"addresses\": [\n        {\n            \"id\": 4,\n            \"street\": \"19 Saharov David\",\n            \"city\": \"Rishon Lezion\",\n            \"zip\": \"231-891\",\n            \"state\": \"Israel\"\n        },\n        {\n            \"id\": 5,\n            \"street\": \"M. Lamar 2-53 y T. Ordóñez\",\n            \"city\": \"Azuay\",\n            \"zip\": \"541012\",\n            \"state\": \"Cuenca\"\n        },\n        {\n            \"id\": 6,\n            \"street\": \"Av Juan Tanca Marengo Km 1.5 C.C. Sepropisa Local 19\",\n            \"city\": \"Guayas\",\n            \"zip\": \"311-091\",\n            \"state\": \"Guayaquil\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": null,\n    \"wishlist\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "create-user-4",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ari Schwartz\",\r\n    \"email\": \"schwartz.ari.69@gmail.com\",\r\n    \"password\": \"ariold69\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"7 Rival\",\r\n            \"city\": \"Tel Aviv\",\r\n            \"zip\": \"2311091\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"150 Herzl\",\r\n            \"city\": \"Tel Aviv\",\r\n            \"zip\": \"23121-11\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Ari is an old man.\",\r\n        \"phoneNumber\": \"8761239810\",\r\n        \"dateOfBirth\": \"2025-05-30\",\r\n        \"loyaltyPoints\": 51\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create-user-4",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Ari Schwartz\",\r\n    \"email\": \"schwartz.ari.69@gmail.com\",\r\n    \"password\": \"ariold69\",\r\n    \"addresses\": [\r\n        {\r\n            \"street\": \"7 Rival\",\r\n            \"city\": \"Tel Aviv\",\r\n            \"zip\": \"2311091\",\r\n            \"state\": \"Israel\"\r\n        },\r\n        {\r\n            \"street\": \"150 Herzl\",\r\n            \"city\": \"Tel Aviv\",\r\n            \"zip\": \"23121-11\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"profile\": {\r\n        \"bio\": \"Ari is an old man.\",\r\n        \"phoneNumber\": \"8761239810\",\r\n        \"dateOfBirth\": \"2025-05-30\",\r\n        \"loyaltyPoints\": 51\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/users",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"users"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 04 Jun 2025 19:59:36 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 4,\n    \"name\": \"Ari Schwartz\",\n    \"email\": \"schwartz.ari.69@gmail.com\",\n    \"password\": \"ariold69\",\n    \"addresses\": [\n        {\n            \"id\": 7,\n            \"street\": \"7 Rival\",\n            \"city\": \"Tel Aviv\",\n            \"zip\": \"2311091\",\n            \"state\": \"Israel\"\n        },\n        {\n            \"id\": 8,\n            \"street\": \"150 Herzl\",\n            \"city\": \"Tel Aviv\",\n            \"zip\": \"23121-11\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Ari is an old man.\",\n        \"phoneNumber\": \"8761239810\",\n        \"dateOfBirth\": \"2025-05-30\",\n        \"loyaltyPoints\": 51\n    },\n    \"wishlist\": []\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "find-user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "find-user",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jun 2025 19:59:41 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"name\": \"Michael Akrawi\",\n    \"email\": \"michael.akrawi@mail.com\",\n    \"password\": \"michael236\",\n    \"addresses\": [\n        {\n            \"id\": 1,\n            \"street\": \"Ben Yehuda Alley\",\n            \"city\": \"Tel Aviv - Jaffa\",\n            \"zip\": \"123-456\",\n            \"state\": \"Israel\"\n        },\n        {\n            \"id\": 2,\n            \"street\": \"16 Yafo Street\",\n            \"city\": \"Jerusalem\",\n            \"zip\": \"765-210\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Hi I'm Michael\",\n        \"phoneNumber\": \"1234567890\",\n        \"dateOfBirth\": \"2025-05-27\",\n        \"loyaltyPoints\": 25\n    },\n    \"wishlist\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "find-users",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "find-users",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jun 2025 19:59:55 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Michael Akrawi\",\n        \"email\": \"michael.akrawi@mail.com\",\n        \"password\": \"michael236\",\n        \"addresses\": [\n            {\n                \"id\": 1,\n                \"street\": \"Ben Yehuda Alley\",\n                \"city\": \"Tel Aviv - Jaffa\",\n                \"zip\": \"123-456\",\n                \"state\": \"Israel\"\n            },\n            {\n                \"id\": 2,\n                \"street\": \"16 Yafo Street\",\n                \"city\": \"Jerusalem\",\n                \"zip\": \"765-210\",\n                \"state\": \"Israel\"\n            }\n        ],\n        \"tags\": [],\n        \"profile\": {\n            \"bio\": \"Hi I'm Michael\",\n            \"phoneNumber\": \"1234567890\",\n            \"dateOfBirth\": \"2025-05-27\",\n            \"loyaltyPoints\": 25\n        },\n        \"wishlist\": []\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Shai Melamed\",\n        \"email\": \"melamed.rocks@mailman.com\",\n        \"password\": \"shai269\",\n        \"addresses\": [\n            {\n                \"id\": 3,\n                \"street\": \"4 Hamatechet\",\n                \"city\": \"Hadera\",\n                \"zip\": \"541-000\",\n                \"state\": \"Israel\"\n            }\n        ],\n        \"tags\": [],\n        \"profile\": {\n            \"bio\": \"Melameds are the best.\",\n            \"phoneNumber\": \"7771230861\",\n            \"dateOfBirth\": \"2025-05-12\",\n            \"loyaltyPoints\": 3\n        },\n        \"wishlist\": []\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Yaniv Yaron\",\n        \"email\": \"yaniv.yaron@hotmail.com\",\n        \"password\": \"redmond123\",\n        \"addresses\": [\n            {\n                \"id\": 4,\n                \"street\": \"19 Saharov David\",\n                \"city\": \"Rishon Lezion\",\n                \"zip\": \"231-891\",\n                \"state\": \"Israel\"\n            },\n            {\n                \"id\": 5,\n                \"street\": \"M. Lamar 2-53 y T. Ordóñez\",\n                \"city\": \"Azuay\",\n                \"zip\": \"541012\",\n                \"state\": \"Cuenca\"\n            },\n            {\n                \"id\": 6,\n                \"street\": \"Av Juan Tanca Marengo Km 1.5 C.C. Sepropisa Local 19\",\n                \"city\": \"Guayas\",\n                \"zip\": \"311-091\",\n                \"state\": \"Guayaquil\"\n            }\n        ],\n        \"tags\": [],\n        \"profile\": null,\n        \"wishlist\": []\n    },\n    {\n        \"id\": 4,\n        \"name\": \"Ari Schwartz\",\n        \"email\": \"schwartz.ari.69@gmail.com\",\n        \"password\": \"ariold69\",\n        \"addresses\": [\n            {\n                \"id\": 7,\n                \"street\": \"7 Rival\",\n                \"city\": \"Tel Aviv\",\n                \"zip\": \"2311091\",\n                \"state\": \"Israel\"\n            },\n            {\n                \"id\": 8,\n                \"street\": \"150 Herzl\",\n                \"city\": \"Tel Aviv\",\n                \"zip\": \"23121-11\",\n                \"state\": \"Israel\"\n            }\n        ],\n        \"tags\": [],\n        \"profile\": {\n            \"bio\": \"Ari is an old man.\",\n            \"phoneNumber\": \"8761239810\",\n            \"dateOfBirth\": \"2025-05-30\",\n            \"loyaltyPoints\": 51\n        },\n        \"wishlist\": []\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "full-update-user",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Shai Melamed\",\r\n    \"email\": \"bestshai.@example.com\",\r\n    \"password\": \"tzp123\",\r\n    \"addresses\": [\r\n        {\r\n            \"id\": 3,\r\n            \"street\": \"10 Hamatechet\",\r\n            \"city\": \"Ponzi City\",\r\n            \"zip\": \"000\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"tags\": [],\r\n    \"profile\": {\r\n        \"bio\": \"Melameds are the best.\",\r\n        \"phoneNumber\": \"7771230861\",\r\n        \"dateOfBirth\": \"2025-05-12\",\r\n        \"loyaltyPoints\": 45\r\n    },\r\n    \"wishlist\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "full-update-user",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Shai Melamed\",\r\n    \"email\": \"bestshai.@example.com\",\r\n    \"password\": \"tzp123\",\r\n    \"addresses\": [\r\n        {\r\n            \"id\": 3,\r\n            \"street\": \"10 Hamatechet\",\r\n            \"city\": \"Ponzi City\",\r\n            \"zip\": \"000\",\r\n            \"state\": \"Israel\"\r\n        }\r\n    ],\r\n    \"tags\": [],\r\n    \"profile\": {\r\n        \"bio\": \"Melameds are the best.\",\r\n        \"phoneNumber\": \"7771230861\",\r\n        \"dateOfBirth\": \"2025-05-12\",\r\n        \"loyaltyPoints\": 45\r\n    },\r\n    \"wishlist\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"2"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jun 2025 20:00:22 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 2,\n    \"name\": \"Shai Melamed\",\n    \"email\": \"bestshai.@example.com\",\n    \"password\": \"tzp123\",\n    \"addresses\": [\n        {\n            \"id\": 3,\n            \"street\": \"10 Hamatechet\",\n            \"city\": \"Ponzi City\",\n            \"zip\": \"000\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Melameds are the best.\",\n        \"phoneNumber\": \"7771230861\",\n        \"dateOfBirth\": \"2025-05-12\",\n        \"loyaltyPoints\": 45\n    },\n    \"wishlist\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "partial-update-user",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Chemical Michael\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "partial-update-user",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Chemical Michael\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jun 2025 20:00:30 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"name\": \"Chemical Michael\",\n    \"email\": \"michael.akrawi@mail.com\",\n    \"password\": \"michael236\",\n    \"addresses\": [\n        {\n            \"id\": 1,\n            \"street\": \"Ben Yehuda Alley\",\n            \"city\": \"Tel Aviv - Jaffa\",\n            \"zip\": \"123-456\",\n            \"state\": \"Israel\"\n        },\n        {\n            \"id\": 2,\n            \"street\": \"16 Yafo Street\",\n            \"city\": \"Jerusalem\",\n            \"zip\": \"765-210\",\n            \"state\": \"Israel\"\n        }\n    ],\n    \"tags\": [],\n    \"profile\": {\n        \"bio\": \"Hi I'm Michael\",\n        \"phoneNumber\": \"1234567890\",\n        \"dateOfBirth\": \"2025-05-27\",\n        \"loyaltyPoints\": 25\n    },\n    \"wishlist\": []\n}"
+				}
+			]
+		},
+		{
+			"name": "delete-user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Chemical Michael\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "delete-user",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Chemical Michael\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"1"
+							]
+						}
+					},
+					"status": "No Content",
+					"code": 204,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 04 Jun 2025 20:00:41 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	]
+}
