@@ -347,11 +347,19 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test exists returns boolean value")
-    void testExistsReturnsBooleanValue() {
+    @DisplayName("Test exists checks user with id exists")
+    void testExistsChecksUserWithIdExists() {
         when(userRepository.existsById(anyLong())).thenReturn(false);
 
         boolean userExists = userService.exists(1L);
+        verify(userRepository).existsById(1L);
         assertThat(userExists).isFalse();
+    }
+
+    @Test
+    @DisplayName("Test delete user deletes an user")
+    void testDeleteUserDeletesAnUser() {
+        userService.delete(9999L);
+        verify(userRepository).deleteById(anyLong());
     }
 }
