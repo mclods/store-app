@@ -14,4 +14,5 @@ public interface UserService {
     Optional<User> findOne(Long id);
     List<User> findAll();
     boolean exists(Long id);
+    void delete(Long id);
 }

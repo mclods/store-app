@@ -144,4 +144,9 @@ public class UserServiceImpl implements UserService {
     public boolean exists(Long id) {
         return userRepository.existsById(id);
     }
+
+    @Override
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
 }

@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
 
@@ -973,10 +975,10 @@ public class UserControllerIntegrationTests {
     @Test
     @DisplayName("Test find all users succeeds with status code 200 and returns all users")
     void testFindAllUsersSucceedsWithStatusCode200AndReturnsAllUsers() throws Exception {
-        userRepository.save(TestDataUtils.testUserA());
-        userRepository.save(TestDataUtils.testUserB());
-
-        String expectedJson = "[{\"id\":13,\"name\":\"Michael Akrawi\",\"email\":\"michael.akrawi@email.com\",\"password\":\"michael123\",\"addresses\":[],\"tags\":[],\"profile\":null,\"wishlist\":[]},{\"id\":14,\"name\":\"Ari Schwartz\",\"email\":\"ari.schwartz@mailman.com\",\"password\":\"49ari\",\"addresses\":[],\"tags\":[],\"profile\":null,\"wishlist\":[]}]";
+        User userA = TestDataUtils.testUserA();
+        User userB = TestDataUtils.testUserB();
+        userRepository.save(userA);
+        userRepository.save(userB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/users")
@@ -984,7 +986,29 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
         ).andExpect(
-                MockMvcResultMatchers.content().string(expectedJson)
+                MockMvcResultMatchers.jsonPath("$.[0].name").value(userA.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[0].email").value(userA.getEmail())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[0].password").value(userA.getPassword())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[0].addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[0].addresses").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[0].profile").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].name").value(userB.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].email").value(userB.getEmail())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].password").value(userB.getPassword())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].addresses").isArray()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].addresses").isEmpty()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.[1].profile").isEmpty()
         );
     }
 
@@ -1000,6 +1024,35 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.status().isOk()
         ).andExpect(
                 MockMvcResultMatchers.content().string(expectedJson)
+        );
+    }
+
+    @Test
+    @DisplayName("Test delete user deletes user and returns status code 204 No Content")
+    void testDeleteUserDeletesUserAndReturnsStatusCode204NoContent() throws Exception {
+        User savedUser = userRepository.save(TestDataUtils.testUserA());
+        Long savedUserId = savedUser.getId();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(String.format("/users/%d", savedUserId))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
+        );
+
+        // Assert user does not exist
+        Optional<User> foundUser = userRepository.findById(savedUserId);
+        assertThat(foundUser).isEmpty();
+    }
+
+    @Test
+    @DisplayName("Test delete user fails with status code 404 Not Found when user does not exist")
+    void testDeleteUserFailsWithStatusCode404NotFoundWhenUserDoesNotExist() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/users/9999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
         );
     }
 }
