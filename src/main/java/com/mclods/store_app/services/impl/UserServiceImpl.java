@@ -10,6 +10,8 @@ import com.mclods.store_app.services.ProfileService;
 import com.mclods.store_app.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -129,6 +131,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findOne(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<User> foundUsers = new ArrayList<>();
+        userRepository.findAll().forEach(foundUsers::add);
+        return foundUsers;
     }
 
     @Override

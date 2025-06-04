@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -41,6 +43,13 @@ public class UserController {
                 new ResponseEntity<>(userMapper.mapUserToUserResponse(user), HttpStatus.OK))
                 .orElseGet(() ->
                         new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping(path = "/users")
+    public ResponseEntity<List<UserResponse>> findAllUsers() {
+        List<UserResponse> foundUsers = new ArrayList<>();
+        userService.findAll().forEach(user -> foundUsers.add(userMapper.mapUserToUserResponse(user)));
+        return new ResponseEntity<>(foundUsers, HttpStatus.OK);
     }
 
     @PutMapping(path = "/users/{id}")
