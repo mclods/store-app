@@ -29,6 +29,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping(path = "/")
+    public String homepage() {
+        return "Welcome to store-app";
+    }
+
     @PostMapping(path = "/users")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         User userToSave = userMapper.mapCreateUserRequestToUser(createUserRequest);
