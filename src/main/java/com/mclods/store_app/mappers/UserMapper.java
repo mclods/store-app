@@ -26,6 +26,8 @@ public abstract class UserMapper {
 
     public abstract UserResponse mapUserToUserResponse(User user);
 
+    public abstract UserResponse.UserAddress mapAddressToUserAddress(Address address);
+
     public User mapCreateUserRequestToUser(CreateUserRequest createUserRequest) {
        User user = new User(
                null,
