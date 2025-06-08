@@ -8,6 +8,7 @@ import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.exceptions.AddressHasMissingFieldsException;
 import com.mclods.store_app.exceptions.UserNotFoundException;
 import com.mclods.store_app.mappers.UserMapper;
+import com.mclods.store_app.services.AddressService;
 import com.mclods.store_app.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,10 +27,14 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserMapper userMapper;
+
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final AddressService addressService;
+
+    public UserController(UserService userService, AddressService addressService) {
         this.userService = userService;
+        this.addressService = addressService;
     }
 
     @GetMapping(path = "/")
@@ -103,5 +108,18 @@ public class UserController {
 
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/users/{id}/addresses")
+    @Operation(summary = "Find all addresses", description = "Find all addresses belonging to a user by user id")
+    public ResponseEntity<List<UserResponse.UserAddress>> findAllAddresses(@PathVariable("id") Long id) {
+        if(!userService.exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<UserResponse.UserAddress> foundAddresses = new ArrayList<>();
+        addressService.findAllByUserId(id)
+                .forEach(address -> foundAddresses.add(userMapper.mapAddressToUserAddress(address)));
+        return new ResponseEntity<>(foundAddresses, HttpStatus.OK);
     }
 }

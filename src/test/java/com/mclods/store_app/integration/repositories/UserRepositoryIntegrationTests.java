@@ -130,4 +130,76 @@ public class UserRepositoryIntegrationTests {
         // Assert Profile
         assertThat(foundUser.get().getProfile()).isNull();
     }
+
+    @Test
+    @DisplayName("Test user can be partially updated")
+    void testUserCanBePartiallyUpdated() {
+        User testUser = TestDataUtils.testUserWithAddressAndProfileA();
+        userRepository.save(testUser);
+
+        testUser.setName("Chemical Michael");
+
+        Address testAddressA = testUser.getAddresses().get(0);
+        testAddressA.setStreet("Coleman St.");
+
+        Profile testProfile = testUser.getProfile();
+        testProfile.setBio("It's my new updated bio");
+        testProfile.setPhoneNumber(null);
+
+        userRepository.save(testUser);
+
+        Optional<User> foundUser = userRepository.findById(testUser.getId());
+
+        assertThat(foundUser).isPresent();
+
+        // Assert User
+        assertThat(foundUser.get())
+                .extracting(User::getName, User::getEmail, User::getPassword)
+                .containsExactly("Chemical Michael", testUser.getEmail(), testUser.getPassword());
+
+        // Assert Addresses
+        assertThat(foundUser.get().getAddresses()).hasSize(2);
+        assertThat(foundUser.get().getAddresses())
+                .extracting(Address::getStreet, Address::getCity,
+                        Address::getZip, Address::getState)
+                .containsExactly(
+                        tuple(
+                                "Coleman St.",
+                                testUser.getAddresses().get(0).getCity(),
+                                testUser.getAddresses().get(0).getZip(),
+                                testUser.getAddresses().get(0).getState()
+                        ),
+                        tuple(
+                                testUser.getAddresses().get(1).getStreet(),
+                                testUser.getAddresses().get(1).getCity(),
+                                testUser.getAddresses().get(1).getZip(),
+                                testUser.getAddresses().get(1).getState()
+                        )
+                );
+
+        // Assert Profile
+        assertThat(foundUser.get().getProfile())
+                .extracting(Profile::getBio, Profile::getPhoneNumber, Profile::getDateOfBirth, Profile::getLoyaltyPoints)
+                .containsExactly(
+                        "It's my new updated bio",
+                        null,
+                        testUser.getProfile().getDateOfBirth(),
+                        testUser.getProfile().getLoyaltyPoints()
+                );
+    }
+
+    @Test
+    @DisplayName("Test user can be deleted")
+    void testUserCanBeDeleted() {
+        User testUser = TestDataUtils.testUserA();
+        userRepository.save(testUser);
+
+        boolean exists = userRepository.existsById(testUser.getId());
+        assertThat(exists).isTrue();
+
+        userRepository.deleteById(testUser.getId());
+
+        exists = userRepository.existsById(testUser.getId());
+        assertThat(exists).isFalse();
+    }
 }
