@@ -6,8 +6,6 @@ import com.mclods.store_app.domain.entities.User;
 import com.mclods.store_app.exceptions.AddressHasMissingFieldsException;
 import com.mclods.store_app.exceptions.UserNotFoundException;
 import com.mclods.store_app.repositories.UserRepository;
-import com.mclods.store_app.services.AddressService;
-import com.mclods.store_app.services.ProfileService;
 import com.mclods.store_app.services.impl.UserServiceImpl;
 import com.mclods.store_app.utils.TestDataUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -31,12 +29,6 @@ public class UserServiceTests {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private ProfileService profileService;
-
-    @Mock
-    private AddressService addressService;
-
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -54,47 +46,71 @@ public class UserServiceTests {
 
     @Test
     @DisplayName("Test full update user saves user with same id")
-    void testFullUpdateUserSavesUserWithSameId() {
+    void testFullUpdateUserSavesUserWithSameId() throws UserNotFoundException {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(profileService.exists(anyLong())).thenReturn(true);
+        User existingUser = TestDataUtils.testExistingUserWithAddressAndProfileA();
 
-        userService.fullUpdateUser(999L, testUser);
-        verify(userRepository).save(argThat(user -> user.getId().equals(999L)
-                && user.getProfile().getId().equals(999L)));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        userService.fullUpdateUser(1L, testUser);
+        verify(userRepository).save(argThat(user -> user.getId().equals(1L)
+                && user.getProfile().getId().equals(1L)));
     }
 
     @Test
     @DisplayName("Test full update user cleans invalid address ids before saving")
-    void testFullUpdateUserCleansInvalidAddressIdsBeforeSaving() {
+    void testFullUpdateUserCleansInvalidAddressIdsBeforeSaving() throws UserNotFoundException {
         User testUser = TestDataUtils.testUserA();
         Address testAddress = TestDataUtils.testAddressA();
 
-        testAddress.setId(1L);
+        testAddress.setId(999L);
         testUser.addAddress(testAddress);
 
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(addressService.existsWithUserId(anyLong(), anyLong())).thenReturn(false);
+        User existingUser = TestDataUtils.testExistingUserWithAddressAndProfileA();
 
-        userService.fullUpdateUser(999L, testUser);
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        userService.fullUpdateUser(1L, testUser);
         verify(userRepository).save(argThat(user -> user.getAddresses().get(0).getId() == null));
     }
 
     @Test
-    @DisplayName("Test partial update user throws UserNotFoundException when its unable to find user")
-    void testPartialUpdateUserThrowsUserNotFoundExceptionWhenItsUnableToFindUser() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+    @DisplayName("Test full update user cleans profile id before saving")
+    void testFullUpdateUserCleansProfileIdBeforeSaving() throws UserNotFoundException {
+        User testUser = TestDataUtils.testUserA();
+        Profile testProfile = TestDataUtils.testProfileA();
 
-        assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.partialUpdateUser(1L, TestDataUtils.testUserA()));
+        testProfile.setId(999L);
+        testUser.addProfile(testProfile);
+
+        User existingUser = TestDataUtils.testExistingUserWithAddressAndProfileA();
+
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        userService.fullUpdateUser(1L, testUser);
+        verify(userRepository).save(argThat(user -> user.getProfile().getId()
+                .equals(existingUser.getProfile().getId())));
+    }
+
+    @Test
+    @DisplayName("Test full update user throws UserNotFoundException if user does not exist")
+    void testFullUpdateUserThrowsUserNotFoundExceptionIfUserDoesNotExist() {
+        User testUser = TestDataUtils.testUserA();
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.fullUpdateUser(1L, testUser));
     }
 
     @Test
     @DisplayName("Test partial update user partially updates the user")
-    void testPartialUpdateUserPartiallyUpdatesTheUser() throws UserNotFoundException, AddressHasMissingFieldsException {
+    void testPartialUpdateUserPartiallyUpdatesTheUser() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserA();
         existingUser.setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
@@ -106,7 +122,7 @@ public class UserServiceTests {
             userToSave.getEmail().equals(existingUser.getEmail()) &&
             userToSave.getPassword().equals(existingUser.getPassword()) &&
             userToSave.getAddresses().isEmpty() &&
-            Optional.ofNullable(userToSave.getProfile()).isEmpty() &&
+            userToSave.getProfile() == null &&
             userToSave.getTags().isEmpty() &&
             userToSave.getWishlist().isEmpty()
         ));
@@ -114,11 +130,11 @@ public class UserServiceTests {
 
     @Test
     @DisplayName("Test partial update user creates new address if address id is not passed")
-    void testPartialUpdateUserCreatesNewAddressIfAddressIdIsNotPassed() throws UserNotFoundException, AddressHasMissingFieldsException {
+    void testPartialUpdateUserCreatesNewAddressIfAddressIdIsNotPassed() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserA();
         existingUser.setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.testPartiallyUpdatedUserWithAddressAndProfileA();
@@ -128,12 +144,13 @@ public class UserServiceTests {
         userService.partialUpdateUser(1L, partiallyUpdatedUser);
         verify(userRepository).save(argThat(userToSave ->
                 userToSave.getId().equals(1L) &&
-                Optional.ofNullable(userToSave.getAddresses().get(0).getId()).isEmpty() &&
+                userToSave.getAddresses().get(0).getId() == null &&
                 userToSave.getAddresses().get(0).getStreet().equals(addressToUpdateA.getStreet()) &&
                 userToSave.getAddresses().get(0).getCity().equals(addressToUpdateA.getCity()) &&
                 userToSave.getAddresses().get(0).getZip().equals(addressToUpdateA.getZip()) &&
                 userToSave.getAddresses().get(0).getState().equals(addressToUpdateA.getState()) &&
-                Optional.ofNullable(userToSave.getAddresses().get(1).getId()).isEmpty() &&
+
+                userToSave.getAddresses().get(1).getId() == null &&
                 userToSave.getAddresses().get(1).getStreet().equals(addressToUpdateB.getStreet()) &&
                 userToSave.getAddresses().get(1).getCity().equals(addressToUpdateB.getCity()) &&
                 userToSave.getAddresses().get(1).getZip().equals(addressToUpdateB.getZip()) &&
@@ -148,31 +165,30 @@ public class UserServiceTests {
         User existingUser = TestDataUtils.testUserA();
         existingUser.setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
 
         User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
+        Address partiallyUpdatedUserAddress = Address.builder()
+                .street("Gerome Street")
+                .state("Alaska State")
+                .build();
 
-        Address addressToUpdateA = new Address(
-                null,
-                "Gerome Street",
-                null,
-                null,
-                "Alaska State",
-                null
-        );
-        partiallyUpdatedUser.addAddress(addressToUpdateA);
+        partiallyUpdatedUser.addAddress(partiallyUpdatedUserAddress);
 
-        assertThatExceptionOfType(AddressHasMissingFieldsException.class).isThrownBy(() -> userService.partialUpdateUser(1L, partiallyUpdatedUser));
+        assertThatThrownBy(() -> userService.partialUpdateUser(1L, partiallyUpdatedUser))
+                .isInstanceOf(RuntimeException.class)
+                .hasCauseExactlyInstanceOf(AddressHasMissingFieldsException.class);
     }
 
     @Test
     @DisplayName("Test partial update user creates new address if address id is not valid")
-    void testPartialUpdateUserCreatesNewAddressIfAddressIdIsNotValid() throws UserNotFoundException, AddressHasMissingFieldsException {
+    void testPartialUpdateUserCreatesNewAddressIfAddressIdIsNotValid() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserWithAddressAndProfileB();
         existingUser.setId(1L);
         existingUser.getAddresses().get(0).setId(1L);
+        existingUser.getProfile().setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.testPartiallyUpdatedUserWithAddressAndProfileB();
@@ -187,7 +203,8 @@ public class UserServiceTests {
                 userToSave.getAddresses().get(0).getCity().equals(existingUser.getAddresses().get(0).getCity()) &&
                 userToSave.getAddresses().get(0).getZip().equals(existingUser.getAddresses().get(0).getZip()) &&
                 userToSave.getAddresses().get(0).getState().equals(existingUser.getAddresses().get(0).getState()) &&
-                Optional.ofNullable(addressToUpdateA.getId()).isEmpty() &&
+
+                addressToUpdateA.getId() == null &&
                 userToSave.getAddresses().get(1).getStreet().equals(addressToUpdateA.getStreet()) &&
                 userToSave.getAddresses().get(1).getCity().equals(addressToUpdateA.getCity()) &&
                 userToSave.getAddresses().get(1).getZip().equals(addressToUpdateA.getZip()) &&
@@ -196,49 +213,24 @@ public class UserServiceTests {
     }
 
     @Test
-    @DisplayName("Test partial update user throws AddressHasMissingFieldsException if address address id is not valid and address has missing fields")
-    void testPartialUpdateUserThrowsAddressHasMissingFieldsExceptionIfAddressIdIsNotValidAndAddressHasMissingFields() {
-        User existingUser = TestDataUtils.testUserA();
-        existingUser.setId(1L);
-
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
-
-        User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
-
-        Address addressToUpdateA = new Address(
-                1L,
-                "Gerome Street",
-                null,
-                null,
-                "Alaska State",
-                null
-        );
-        partiallyUpdatedUser.addAddress(addressToUpdateA);
-
-        assertThatExceptionOfType(AddressHasMissingFieldsException.class).isThrownBy(() -> userService.partialUpdateUser(1L, partiallyUpdatedUser));
-    }
-
-    @Test
-    @DisplayName("Test partial update user partially updates address if address id of an existing address is passed")
-    void testPartialUpdateUserPartiallyUpdatesAddressIfAddressIdOfAnExistingAddressIsPassed() throws UserNotFoundException, AddressHasMissingFieldsException {
+    @DisplayName("Test partial update user partially updates address if address id belongs to an existing address")
+    void testPartialUpdateUserPartiallyUpdatesAddressIfAddressIdBelongsToAnExistingAddress() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserWithAddressAndProfileB();
         existingUser.setId(1L);
         existingUser.getAddresses().get(0).setId(1L);
+        existingUser.getProfile().setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
+        Address partiallyUpdatedUserAddress = Address.builder()
+                .id(1L)
+                .street("Peterson St.")
+                .state("Sweden")
+                .build();
 
-        Address addressToUpdate = new Address(
-                1L,
-                "Peterson St.",
-                null,
-                null,
-                "Sweden",
-                null
-        );
-        partiallyUpdatedUser.addAddress(addressToUpdate);
+        partiallyUpdatedUser.addAddress(partiallyUpdatedUserAddress);
 
         userService.partialUpdateUser(1L, partiallyUpdatedUser);
         verify(userRepository).save(argThat(userToSave ->
@@ -253,57 +245,51 @@ public class UserServiceTests {
 
     @Test
     @DisplayName("Test partial update user creates a new profile")
-    void testPartialUpdateUserCreatesANewProfile() throws UserNotFoundException, AddressHasMissingFieldsException {
+    void testPartialUpdateUserCreatesANewProfile() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserA();
         existingUser.setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
+        Profile partiallyUpdatedUserProfile = Profile.builder()
+                .id(3L)
+                .bio("Best Bio Ever")
+                .dateOfBirth(LocalDate.parse("2020-05-12"))
+                .build();
 
-        Profile profileToUpdate = new Profile(
-                3L,
-                "Best Bio Ever",
-                null,
-                LocalDate.parse("2020-05-12"),
-                null,
-                null
-        );
-        partiallyUpdatedUser.addProfile(profileToUpdate);
+        partiallyUpdatedUser.addProfile(partiallyUpdatedUserProfile);
 
         userService.partialUpdateUser(1L, partiallyUpdatedUser);
         verify(userRepository).save(argThat(userToSave ->
                 userToSave.getId().equals(1L) &&
-                Optional.ofNullable(userToSave.getProfile().getId()).isEmpty() &&
+                userToSave.getProfile().getId() == null &&
                 userToSave.getProfile().getBio().equals("Best Bio Ever") &&
-                Optional.ofNullable(userToSave.getProfile().getPhoneNumber()).isEmpty() &&
+                userToSave.getProfile().getPhoneNumber() == null &&
                 userToSave.getProfile().getDateOfBirth().isEqual(LocalDate.parse("2020-05-12")) &&
-                Optional.ofNullable(userToSave.getProfile().getLoyaltyPoints()).isEmpty()
+                userToSave.getProfile().getLoyaltyPoints() == null
         ));
     }
 
     @Test
     @DisplayName("Test partial update user partially updates an existing profile")
-    void testPartialUpdateUserPartiallyUpdatesAnExistingProfile() throws UserNotFoundException, AddressHasMissingFieldsException {
+    void testPartialUpdateUserPartiallyUpdatesAnExistingProfile() throws UserNotFoundException {
         User existingUser = TestDataUtils.testUserWithAddressAndProfileA();
         existingUser.setId(1L);
         existingUser.getProfile().setId(1L);
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(existingUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         User partiallyUpdatedUser = TestDataUtils.partiallyUpdatedUserA();
+        Profile partiallyUpdatedUserProfile = Profile.builder()
+                .id(1L)
+                .bio("Best Bio Ever")
+                .dateOfBirth(LocalDate.parse("2020-05-12"))
+                .build();
 
-        Profile profileToUpdate = new Profile(
-                3L,
-                "Best Bio Ever",
-                null,
-                LocalDate.parse("2020-05-12"),
-                null,
-                null
-        );
-        partiallyUpdatedUser.addProfile(profileToUpdate);
+        partiallyUpdatedUser.addProfile(partiallyUpdatedUserProfile);
 
         userService.partialUpdateUser(1L, partiallyUpdatedUser);
         verify(userRepository).save(argThat(userToSave ->
@@ -320,7 +306,7 @@ public class UserServiceTests {
     @DisplayName("Test find one returns an optional user")
     void testFindOneReturnsAnOptionalUser() {
         User testUser = TestDataUtils.testUserA();
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(testUser));
+        when(userRepository.findUser(anyLong())).thenReturn(Optional.of(testUser));
 
         Optional<User> foundUser = userService.findOne(1L);
         assertThat(foundUser).isPresent();
@@ -329,7 +315,7 @@ public class UserServiceTests {
     @Test
     @DisplayName("Test find all returns all users")
     void testFindAllReturnsAllUsers() {
-        when(userRepository.findAll()).thenReturn(List.of(TestDataUtils.testUserA(), TestDataUtils.testUserB()));
+        when(userRepository.findAllUsers()).thenReturn(List.of(TestDataUtils.testUserA(), TestDataUtils.testUserB()));
 
         List<User> foundUsers = userService.findAll();
         assertThat(foundUsers)
@@ -340,7 +326,7 @@ public class UserServiceTests {
     @Test
     @DisplayName("Test find all returns empty list")
     void testFindAllReturnsEmptyList() {
-        when(userRepository.findAll()).thenReturn(List.of());
+        when(userRepository.findAllUsers()).thenReturn(List.of());
 
         List<User> foundUsers = userService.findAll();
         assertThat(foundUsers).isEmpty();

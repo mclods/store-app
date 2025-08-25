@@ -28,10 +28,10 @@ public class UserRepositoryIntegrationTests {
         User testUser = TestDataUtils.testUserA();
 
         userRepository.save(testUser);
-        Optional<User> foundUser = userRepository.findById(testUser.getId());
+        Optional<User> savedUser = userRepository.findUser(testUser.getId());
 
-        assertThat(foundUser).isPresent();
-        assertThat(foundUser.get())
+        assertThat(savedUser).isPresent();
+        assertThat(savedUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
                 .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
     }
@@ -42,18 +42,18 @@ public class UserRepositoryIntegrationTests {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
 
         userRepository.save(testUser);
-        Optional<User> foundUser = userRepository.findById(testUser.getId());
+        Optional<User> savedUser = userRepository.findUser(testUser.getId());
 
-        assertThat(foundUser).isPresent();
+        assertThat(savedUser).isPresent();
 
         // Assert User
-        assertThat(foundUser.get())
+        assertThat(savedUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
                 .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
 
         // Assert Addresses
-        assertThat(foundUser.get().getAddresses()).hasSize(2);
-        assertThat(foundUser.get().getAddresses())
+        assertThat(savedUser.get().getAddresses()).hasSize(2);
+        assertThat(savedUser.get().getAddresses())
                 .extracting(Address::getStreet, Address::getCity,
                         Address::getZip, Address::getState)
                 .containsExactly(
@@ -72,7 +72,7 @@ public class UserRepositoryIntegrationTests {
                 );
 
         // Assert Profile
-        assertThat(foundUser.get().getProfile())
+        assertThat(savedUser.get().getProfile())
                 .extracting(Profile::getBio, Profile::getPhoneNumber,
                         Profile::getDateOfBirth, Profile::getLoyaltyPoints)
                 .containsExactly(
@@ -89,33 +89,33 @@ public class UserRepositoryIntegrationTests {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
         userRepository.save(testUser);
 
-        Address updatedAddress = new Address(
-                testUser.getAddresses().get(0).getId(),
-                "Azrieli Center 34th Floor",
-                "Tel Aviv",
-                "461-211",
-                "Israel",
-                null
-        );
+        User savedUser = userRepository.findUser(testUser.getId()).orElseThrow();
 
-        User updatedUser = TestDataUtils.testUserB();
-        updatedUser.setId(testUser.getId());
-        updatedUser.addAddress(updatedAddress);
+        User userToUpdate = TestDataUtils.testUserB();
+        userToUpdate.setId(savedUser.getId());
 
-        userRepository.save(updatedUser);
+        Address userAddressToUpdate = Address.builder()
+                .id(savedUser.getAddresses().get(0).getId())
+                .street("Azrieli Center 34th Floor")
+                .city("Tel Aviv")
+                .zip("461-211")
+                .state("Israel")
+                .build();
+        userToUpdate.addAddress(userAddressToUpdate);
+        userRepository.save(userToUpdate);
 
-        Optional<User> foundUser = userRepository.findById(updatedUser.getId());
+        Optional<User> updatedUser = userRepository.findUser(savedUser.getId());
 
-        assertThat(foundUser).isPresent();
+        assertThat(updatedUser).isPresent();
 
         // Assert User
-        assertThat(foundUser.get())
+        assertThat(updatedUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
-                .containsExactly(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getPassword());
+                .containsExactly(testUser.getName(), testUser.getEmail(), testUser.getPassword());
 
         // Assert Addresses
-        assertThat(foundUser.get().getAddresses()).hasSize(1);
-        assertThat(foundUser.get().getAddresses())
+        assertThat(updatedUser.get().getAddresses()).hasSize(1);
+        assertThat(updatedUser.get().getAddresses())
                 .extracting(Address::getStreet, Address::getCity,
                         Address::getZip, Address::getState)
                 .containsExactly(
@@ -128,7 +128,7 @@ public class UserRepositoryIntegrationTests {
                 );
 
         // Assert Profile
-        assertThat(foundUser.get().getProfile()).isNull();
+        assertThat(updatedUser.get().getProfile()).isNull();
     }
 
     @Test
@@ -148,18 +148,18 @@ public class UserRepositoryIntegrationTests {
 
         userRepository.save(testUser);
 
-        Optional<User> foundUser = userRepository.findById(testUser.getId());
+        Optional<User> savedUser = userRepository.findUser(testUser.getId());
 
-        assertThat(foundUser).isPresent();
+        assertThat(savedUser).isPresent();
 
         // Assert User
-        assertThat(foundUser.get())
+        assertThat(savedUser.get())
                 .extracting(User::getName, User::getEmail, User::getPassword)
                 .containsExactly("Chemical Michael", testUser.getEmail(), testUser.getPassword());
 
         // Assert Addresses
-        assertThat(foundUser.get().getAddresses()).hasSize(2);
-        assertThat(foundUser.get().getAddresses())
+        assertThat(savedUser.get().getAddresses()).hasSize(2);
+        assertThat(savedUser.get().getAddresses())
                 .extracting(Address::getStreet, Address::getCity,
                         Address::getZip, Address::getState)
                 .containsExactly(
@@ -178,7 +178,7 @@ public class UserRepositoryIntegrationTests {
                 );
 
         // Assert Profile
-        assertThat(foundUser.get().getProfile())
+        assertThat(savedUser.get().getProfile())
                 .extracting(Profile::getBio, Profile::getPhoneNumber, Profile::getDateOfBirth, Profile::getLoyaltyPoints)
                 .containsExactly(
                         "It's my new updated bio",

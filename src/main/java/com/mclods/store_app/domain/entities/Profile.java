@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 public class Profile {
     @Id
     @Column(name = "id")
@@ -31,25 +33,6 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     @MapsId
+    @ToString.Exclude
     private User user;
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this) {
-            return true;
-        }
-
-        if(!(obj instanceof Profile profileObj)) {
-            return false;
-        }
-
-        return id != null && id.equals(profileObj.id);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Profile (id=%d, bio=%s, phoneNumber=%s, " +
-                        "dateOfBirth=%s, loyaltyPoints=%d)",
-                id, bio, phoneNumber, dateOfBirth, loyaltyPoints);
-    }
 }

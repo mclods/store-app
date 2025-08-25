@@ -1,19 +1,10 @@
 package com.mclods.store_app.services.impl;
 
-import com.mclods.store_app.repositories.ProfileRepository;
 import com.mclods.store_app.services.ProfileService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
-    private final ProfileRepository profileRepository;
-
-    public ProfileServiceImpl(ProfileRepository profileRepository) {
-        this.profileRepository = profileRepository;
-    }
-
-    @Override
-    public boolean exists(Long id) {
-        return profileRepository.existsById(id);
-    }
 }

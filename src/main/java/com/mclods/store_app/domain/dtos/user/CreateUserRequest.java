@@ -3,21 +3,17 @@ package com.mclods.store_app.domain.dtos.user;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateUserRequest {
     @NotNull(message = "user name cannot be null")
@@ -30,14 +26,11 @@ public class CreateUserRequest {
     private String password;
 
     @Valid
+    @Builder.Default
     private List<CreateUserAddress> addresses = new ArrayList<>();
-
-    private Set<Integer> tagsIds = new HashSet<>();
 
     @Valid
     private CreateUserProfile profile;
-
-    private Set<Long> productIds = new HashSet<>();
 
     @Getter
     @Setter

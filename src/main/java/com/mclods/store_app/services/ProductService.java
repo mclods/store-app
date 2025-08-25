@@ -1,4 +1,4 @@
 package com.mclods.store_app.services;
 
-public interface ProfileService {
+public interface ProductService {
 }

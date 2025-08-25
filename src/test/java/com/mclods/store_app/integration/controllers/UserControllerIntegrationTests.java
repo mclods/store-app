@@ -79,15 +79,7 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isEmpty()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile").doesNotExist()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
         );
     }
 
@@ -255,10 +247,6 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses[1].state").value(user.getAddresses().get(1).getState())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile.bio").value(user.getProfile().getBio())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile.phoneNumber").value(user.getProfile().getPhoneNumber())
@@ -266,10 +254,6 @@ public class UserControllerIntegrationTests {
                 MockMvcResultMatchers.jsonPath("$.profile.dateOfBirth").value(user.getProfile().getDateOfBirth().toString())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile.loyaltyPoints").value(user.getProfile().getLoyaltyPoints())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
         );
     }
 
@@ -372,15 +356,7 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isEmpty()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile").isEmpty()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
         );
     }
 
@@ -668,15 +644,7 @@ public class UserControllerIntegrationTests {
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.addresses").isEmpty()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.tags").isEmpty()
-        ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.profile").isEmpty()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isArray()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.wishlist").isEmpty()
         );
     }
 

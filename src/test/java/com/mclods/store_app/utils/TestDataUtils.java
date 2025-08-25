@@ -12,97 +12,77 @@ import java.util.*;
 
 public class TestDataUtils {
     public static User testUserA() {
-        return new User(
-                null,
-                "Michael Akrawi",
-                "michael.akrawi@email.com",
-                "michael123",
-                null,
-                null,
-                null,
-                null
-        );
+        return User.builder()
+                .name("Michael Akrawi")
+                .email("michael.akrawi@email.com")
+                .password("michael123")
+                .build();
     }
 
     public static User testUserB() {
-        return new User(
-                null,
-                "Ari Schwartz",
-                "ari.schwartz@mailman.com",
-                "49ari",
-                null,
-                null,
-                null,
-                null
-        );
+        return User.builder()
+                .name("Ari Schwartz")
+                .email("ari.schwartz@mailman.com")
+                .password("49ari")
+                .build();
     }
 
     public static User partiallyUpdatedUserA() {
-        User user = new User();
-        user.setName("Chemical Michael");
-        return user;
+        return User.builder()
+                .name("Chemical Michael")
+                .build();
     }
 
     public static User partiallyUpdatedUserB() {
-        User user = new User();
-        user.setName("Stormy Night");
-        user.setEmail("fortnight.storm@mail.com");
-        return user;
+        return User.builder()
+                .name("Stormy Night")
+                .email("fortnight.storm@mail.com")
+                .build();
     }
 
     public static Address testAddressA() {
-        return new Address(
-                null,
-                "Ben Yehuda Alley",
-                "Tel Aviv - Jaffa",
-                "123-456",
-                "Israel",
-                null
-        );
+        return Address.builder()
+                .street("Ben Yehuda Alley")
+                .city("Tel Aviv - Jaffa")
+                .zip("123-456")
+                .state("Israel")
+                .build();
     }
 
     public static Address testAddressB() {
-        return new Address(
-                null,
-                "16 Yafo Street",
-                "Jerusalem",
-                "765-210",
-                "Israel",
-                null
-        );
+        return Address.builder()
+                .street("16 Yafo Street")
+                .city("Jerusalem")
+                .zip("765-210")
+                .state("Israel")
+                .build();
     }
 
     public static Address testAddressC() {
-        return new Address(
-                null,
-                "4 Hamatechet",
-                "Hadera",
-                "541-000",
-                "Israel",
-                null
-        );
+        return Address.builder()
+                .street("4 Hamatechet")
+                .city("Hadera")
+                .zip("541-000")
+                .state("Israel")
+                .build();
     }
 
     public static Profile testProfileA() {
-        return new Profile(
-                null,
-                "Hi I'm Michael",
-                "1234567890",
-                LocalDate.parse("2025-05-27"),
-                25,
-                null
-        );
+        return Profile.builder()
+                .bio("Hi I'm Michael")
+                .phoneNumber("1234567890")
+                .dateOfBirth(LocalDate.parse("2025-05-27"))
+                .loyaltyPoints(25)
+                .build();
     }
 
     public static Profile testProfileB() {
-        return new Profile(
-                null,
-                "Ari is an old man.",
-                "8761239810",
-                LocalDate.parse("2025-05-30"),
-                30,
-                null
-        );
+        return Profile.builder()
+                .bio("Ari is an old man.")
+                .phoneNumber("8761239810")
+                .dateOfBirth(LocalDate.parse("2025-05-30"))
+                .loyaltyPoints(30)
+                .build();
     }
 
     public static User testUserWithAddressAndProfileA() {
@@ -112,6 +92,22 @@ public class TestDataUtils {
         user.addAddress(testAddressB());
 
         user.addProfile(testProfileA());
+
+        return user;
+    }
+
+    public static User testExistingUserWithAddressAndProfileA() {
+        User user = testUserA();
+        user.setId(1L);
+
+        user.addAddress(testAddressA());
+        user.getAddresses().get(0).setId(1L);
+
+        user.addAddress(testAddressB());
+        user.getAddresses().get(1).setId(2L);
+
+        user.addProfile(testProfileA());
+        user.getProfile().setId(1L);
 
         return user;
     }
@@ -146,30 +142,24 @@ public class TestDataUtils {
     }
 
     public static CreateUserRequest testCreateUserRequestA() {
-        return new CreateUserRequest(
-                "Solomon Adi",
-                "solomom.islands@gz.com",
-                "passforpass123",
-                null,
-                null,
-                null,
-                null
-        );
+        return CreateUserRequest.builder()
+                .name("Solomon Adi")
+                .email("solomom.islands@gz.com")
+                .password("passforpass123")
+                .build();
     }
 
     public static CreateUserRequest testCreateUserRequestWithAddressAndProfileA() {
-        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
-        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
+        CreateUserRequest createUserRequest = CreateUserRequest.builder()
+                .name("Solomon Adi")
+                .email("solomom.islands@gz.com")
+                .password("passforpass123")
+                .build();
 
-        return new CreateUserRequest(
-                "Solomon Adi",
-                "solomom.islands@gz.com",
-                "passforpass123",
-                Arrays.asList(testCreateUserAddressA(), testCreateUserAddressB()),
-                tagIds,
-                testCreateUserProfileA(),
-                productIds
-        );
+        createUserRequest.setAddresses(Arrays.asList(testCreateUserAddressA(), testCreateUserAddressB()));
+        createUserRequest.setProfile(testCreateUserProfileA());
+
+        return createUserRequest;
     }
 
     public static CreateUserRequest.CreateUserAddress testCreateUserAddressA() {
@@ -200,30 +190,24 @@ public class TestDataUtils {
     }
 
     public static FullUpdateUserRequest testFullUpdateUserRequestA() {
-        return new FullUpdateUserRequest(
-                "Melamed Shai",
-                "shai.melamed@gmail.com",
-                "shai.starpass123",
-                null,
-                null,
-                null,
-                null
-        );
+        return FullUpdateUserRequest.builder()
+                .name("Melamed Shai")
+                .email("shai.melamed@gmail.com")
+                .password("shai.starpass123")
+                .build();
     }
 
     public static FullUpdateUserRequest testFullUpdateUserRequestWithAddressAndProfileA() {
-        Set<Integer> tagIds = new HashSet<>(Arrays.asList(1, 2, 3));
-        Set<Long> productIds = new HashSet<>(Arrays.asList(1L, 2L, 3L));
+        FullUpdateUserRequest fullUpdateUserRequest = FullUpdateUserRequest.builder()
+                .name("Melamed Shai")
+                .email("shai.melamed@gmail.com")
+                .password("shai.starpass123")
+                .build();
 
-        return new FullUpdateUserRequest(
-                "Melamed Shai",
-                "shai.melamed@gmail.com",
-                "shai.starpass123",
-                List.of(testFullUpdateUserAddressA()),
-                tagIds,
-                testFullUpdateUserProfileA(),
-                productIds
-        );
+        fullUpdateUserRequest.setAddresses(List.of(testFullUpdateUserAddressA()));
+        fullUpdateUserRequest.setProfile(testFullUpdateUserProfileA());
+
+        return fullUpdateUserRequest;
     }
 
     public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressA() {
@@ -256,15 +240,9 @@ public class TestDataUtils {
     }
 
     public static PartialUpdateUserRequest testPartialUpdateUserRequestA() {
-        return new PartialUpdateUserRequest(
-                "Crazy Toon",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        return PartialUpdateUserRequest.builder()
+                .name("Crazy Toon")
+                .build();
     }
 
     public static PartialUpdateUserRequest.PartialUpdateUserAddress testPartialUpdateUserAddressA() {

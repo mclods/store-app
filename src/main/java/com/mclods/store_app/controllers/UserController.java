@@ -5,10 +5,8 @@ import com.mclods.store_app.domain.dtos.user.FullUpdateUserRequest;
 import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.domain.dtos.user.UserResponse;
 import com.mclods.store_app.domain.entities.User;
-import com.mclods.store_app.exceptions.AddressHasMissingFieldsException;
 import com.mclods.store_app.exceptions.UserNotFoundException;
 import com.mclods.store_app.mappers.UserMapper;
-import com.mclods.store_app.services.AddressService;
 import com.mclods.store_app.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,33 +28,30 @@ public class UserController {
 
     private final UserService userService;
 
-    private final AddressService addressService;
-
-    public UserController(UserService userService, AddressService addressService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.addressService = addressService;
     }
 
     @GetMapping(path = "/")
     @Operation(summary = "Homepage", description = "Homepage")
-    public String homepage() {
+    public String home() {
         return "Welcome to store-app";
     }
 
     @PostMapping(path = "/users")
     @Operation(summary = "Create user", description = "Create a new user")
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
-        User userToSave = userMapper.mapCreateUserRequestToUser(createUserRequest);
+        User userToSave = userMapper.map(createUserRequest);
         User savedUser = userService.save(userToSave);
-        return new ResponseEntity<>(userMapper.mapUserToUserResponse(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(userMapper.map(savedUser), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/users/{id}")
     @Operation(summary = "Find one user", description = "Find one user by id")
     public ResponseEntity<UserResponse> findOneUser(@PathVariable("id") Long id) {
         Optional<User> foundUser = userService.findOne(id);
-        return foundUser.map((user) ->
-                new ResponseEntity<>(userMapper.mapUserToUserResponse(user), HttpStatus.OK))
+        return foundUser.map(user ->
+                new ResponseEntity<>(userMapper.map(user), HttpStatus.OK))
                 .orElseGet(() ->
                         new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -65,7 +60,7 @@ public class UserController {
     @Operation(summary = "Find all users", description = "Find all users")
     public ResponseEntity<List<UserResponse>> findAllUsers() {
         List<UserResponse> foundUsers = new ArrayList<>();
-        userService.findAll().forEach(user -> foundUsers.add(userMapper.mapUserToUserResponse(user)));
+        userService.findAll().forEach(user -> foundUsers.add(userMapper.map(user)));
         return new ResponseEntity<>(foundUsers, HttpStatus.OK);
     }
 
@@ -74,14 +69,14 @@ public class UserController {
     public ResponseEntity<UserResponse> fullUpdateUser(
             @PathVariable("id") Long id,
             @RequestBody @Valid FullUpdateUserRequest fullUserUpdateRequest
-    ) {
+    ) throws UserNotFoundException {
         if(!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        User userToUpdate = userMapper.mapFullUpdateUserRequestToUser(fullUserUpdateRequest);
+        User userToUpdate = userMapper.map(fullUserUpdateRequest);
         User updatedUser = userService.fullUpdateUser(id, userToUpdate);
-        return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.map(updatedUser), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/users/{id}")
@@ -89,14 +84,14 @@ public class UserController {
     public ResponseEntity<UserResponse> partialUpdateUser(
             @PathVariable("id") Long id,
             @RequestBody @Valid PartialUpdateUserRequest partialUpdateUserRequest
-    ) throws UserNotFoundException, AddressHasMissingFieldsException {
+    ) throws UserNotFoundException {
         if(!userService.exists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        User userToUpdate = userMapper.mapPartialUpdateUserRequestToUser(partialUpdateUserRequest);
+        User userToUpdate = userMapper.map(partialUpdateUserRequest);
         User updatedUser = userService.partialUpdateUser(id, userToUpdate);
-        return new ResponseEntity<>(userMapper.mapUserToUserResponse(updatedUser), HttpStatus.OK);
+        return new ResponseEntity<>(userMapper.map(updatedUser), HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{id}")
@@ -108,18 +103,5 @@ public class UserController {
 
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/users/{id}/addresses")
-    @Operation(summary = "Find all addresses", description = "Find all addresses belonging to a user by user id")
-    public ResponseEntity<List<UserResponse.UserAddress>> findAllAddresses(@PathVariable("id") Long id) {
-        if(!userService.exists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        List<UserResponse.UserAddress> foundAddresses = new ArrayList<>();
-        addressService.findAllByUserId(id)
-                .forEach(address -> foundAddresses.add(userMapper.mapAddressToUserAddress(address)));
-        return new ResponseEntity<>(foundAddresses, HttpStatus.OK);
     }
 }

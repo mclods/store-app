@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class Tag {
     @Id
     @Column(name = "id")
@@ -22,23 +22,10 @@ public class Tag {
     private String name;
 
     @ManyToMany(mappedBy = "tags")
+    @ToString.Exclude
     private Set<User> users = new HashSet<>();
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this) {
-            return true;
-        }
-
-        if(!(obj instanceof Tag tagObj)) {
-            return false;
-        }
-
-        return id != null && id.equals(tagObj.id);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Tag (id=%d, name=%s)", id, name);
+    public Tag(String name) {
+        this.name = name;
     }
 }

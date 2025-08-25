@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Long> {
-    boolean existsByIdAndUserId(Long addressId, Long userId);
-    Iterable<Address> findAllByUserId(Long userId);
 }
