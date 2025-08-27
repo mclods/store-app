@@ -7,9 +7,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -26,11 +24,7 @@ public class UserResponse {
 
     private List<UserAddress> addresses = new ArrayList<>();
 
-    private Set<UserTags> tags = new HashSet<>();
-
     private UserProfile profile;
-
-    private Set<UserWishlistProduct> wishlist = new HashSet<>();
 
     @Getter
     @Setter
@@ -52,16 +46,6 @@ public class UserResponse {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UserTags {
-        private Integer id;
-
-        private String name;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class UserProfile {
         private String bio;
 
@@ -70,19 +54,5 @@ public class UserResponse {
         private LocalDate dateOfBirth;
 
         private Integer loyaltyPoints;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserWishlistProduct {
-        private Long id;
-
-        private String name;
-
-        private String description;
-
-        private Double price;
     }
 }

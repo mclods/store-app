@@ -4,23 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mclods.store_app.validators.UniqueIds;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FullUpdateUserRequest {
+    private Long id;
+
     @NotNull(message = "user name cannot be null")
     private String name;
 
@@ -32,19 +30,17 @@ public class FullUpdateUserRequest {
 
     @Valid
     @UniqueIds(message = "Address Ids must be unique")
+    @Builder.Default
     private List<FullUpdateUserAddress> addresses = new ArrayList<>();
-
-    private Set<Integer> tagsIds = new HashSet<>();
 
     @Valid
     private FullUpdateUserProfile profile;
-
-    private Set<Long> productIds = new HashSet<>();
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class FullUpdateUserAddress {
         private Long id;
 
@@ -65,6 +61,7 @@ public class FullUpdateUserRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class FullUpdateUserProfile {
         private String bio;
 

@@ -1,7 +1,8 @@
-package com.mclods.store_app.validators;
+package com.mclods.store_app.unit.validators;
 
 import com.mclods.store_app.domain.dtos.user.PartialUpdateUserRequest;
 import com.mclods.store_app.utils.TestDataUtils;
+import com.mclods.store_app.validators.PartialUpdateUserAddressUniqueIdsValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

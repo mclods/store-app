@@ -9,6 +9,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 public class Product {
     @Id
     @Column(name = "id")
@@ -26,24 +28,11 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
+    @ToString.Exclude
     private Category category;
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this) {
-            return true;
-        }
-
-        if(!(obj instanceof Product productObj)) {
-            return false;
-        }
-
-        return id != null && id.equals(productObj.id);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Product (id=%d, name=%s, description=%s, price=%f)",
-                id, name, description, price);
+    public void addCategory(Category category) {
+        category.getProducts().add(this);
+        this.category = category;
     }
 }

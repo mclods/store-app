@@ -9,6 +9,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@ToString
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +31,8 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
-
-    public boolean isValid() {
-        return street != null && city != null && zip != null && state != null;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -41,16 +40,14 @@ public class Address {
             return true;
         }
 
-        if(!(obj instanceof Address addressObj)) {
+        if(!(obj instanceof Address address)) {
             return false;
         }
 
-        return id != null && id.equals(addressObj.id);
+        return id.equals(address.id);
     }
 
-    @Override
-    public String toString() {
-        return String.format("Address (id=%d, street=%s, city=%s, zip=%s, state=%s)",
-                id, street, city, zip, state);
+    public boolean isValid() {
+        return street != null && city != null && zip != null && state != null;
     }
 }

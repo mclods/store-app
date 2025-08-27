@@ -21,45 +21,9 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    @Setter(AccessLevel.NONE)
     List<Product> products = new ArrayList<>();
 
-    public Category(Short id, String name, List<Product> products) {
-        this.id = id;
+    public Category(String name) {
         this.name = name;
-
-        if(products != null) {
-            for(Product product : products) {
-                addProduct(product);
-            }
-        }
-    }
-
-    public void addProduct(Product product) {
-        product.setCategory(this);
-        products.add(product);
-    }
-
-    public void removeProduct(Product product) {
-        product.setCategory(null);
-        products.remove(product);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == this) {
-            return true;
-        }
-
-        if(!(obj instanceof Category categoryObj)) {
-            return false;
-        }
-
-        return id != null && id.equals(categoryObj.id);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Category (id=%d, name=%s)", id, name);
     }
 }

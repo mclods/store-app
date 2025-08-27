@@ -20,13 +20,13 @@ import static org.assertj.core.api.Assertions.tuple;
 @ExtendWith(MockitoExtension.class)
 public class UserMapperTests {
     @Test
-    @DisplayName("Test mapCreateUserRequestToUser generates the correct mapping")
-    void testMapCreateUserRequestToUserGeneratesTheCorrectMapping()
+    @DisplayName("Test CreateUserRequest to User gets mapped")
+    void testCreateUserRequestToUserGetsMapped()
     {
         CreateUserRequest createUserRequest = TestDataUtils.testCreateUserRequestWithAddressAndProfileA();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-        User mappedUser = userMapper.mapCreateUserRequestToUser(createUserRequest);
+        User mappedUser = userMapper.map(createUserRequest);
 
         // Assert User
         assertThat(mappedUser)
@@ -66,12 +66,12 @@ public class UserMapperTests {
     }
 
     @Test
-    @DisplayName("Test mapFullUpdateUserRequestToUser generates the correct mapping")
-    void testMapFullUpdateUserRequestToUserGeneratesTheCorrectMapping() {
+    @DisplayName("Test FullUpdateUserRequest to User gets mapped")
+    void testFullUpdateUserRequestToUserGetsMapped() {
         FullUpdateUserRequest fullUpdateUserRequest = TestDataUtils.testFullUpdateUserRequestWithAddressAndProfileA();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-        User mappedUser = userMapper.mapFullUpdateUserRequestToUser(fullUpdateUserRequest);
+        User mappedUser = userMapper.map(fullUpdateUserRequest);
 
         // Assert User
         assertThat(mappedUser)
@@ -106,12 +106,12 @@ public class UserMapperTests {
     }
 
     @Test
-    @DisplayName("Test mapPartialUpdateUserRequestToUser generates the correct mapping")
-    void testMapPartialUpdateUserRequestToUserGeneratesTheCorrectMapping() {
+    @DisplayName("Test PartialUpdateUserRequest to User gets mapped")
+    void testPartialUpdateUserRequestToUserGetsMapped() {
         PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestWithAddressAndProfileA();
 
         UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-        User mappedUser = userMapper.mapPartialUpdateUserRequestToUser(partialUpdateUserRequest);
+        User mappedUser = userMapper.map(partialUpdateUserRequest);
 
         // Assert User
         assertThat(mappedUser)
