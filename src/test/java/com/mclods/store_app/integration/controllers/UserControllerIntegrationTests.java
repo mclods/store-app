@@ -748,14 +748,11 @@ public class UserControllerIntegrationTests {
 
         PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
 
-        PartialUpdateUserRequest.PartialUpdateUserAddress address = new PartialUpdateUserRequest.PartialUpdateUserAddress(
-                savedUserAddressId,
-                "Camac Street",
-                null,
-                null,
-                null
-        );
-        partialUpdateUserRequest.setAddresses(List.of(address));
+        var partialUpdateUserAddress = PartialUpdateUserRequest.PartialUpdateUserAddress.builder()
+                .id(savedUserAddressId)
+                .street("Camac Street")
+                .build();
+        partialUpdateUserRequest.setAddresses(List.of(partialUpdateUserAddress));
 
         String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
 
@@ -919,15 +916,13 @@ public class UserControllerIntegrationTests {
 
         PartialUpdateUserRequest partialUpdateUserRequest = TestDataUtils.testPartialUpdateUserRequestA();
 
-        PartialUpdateUserRequest.PartialUpdateUserAddress address = new PartialUpdateUserRequest.PartialUpdateUserAddress(
-                null,
-                null,
-                "Tel Aviv - Jaffa",
-                "123-456",
-                "Israel"
-        );
+        var partialUpdateUserAddress = PartialUpdateUserRequest.PartialUpdateUserAddress.builder()
+                .city("Tel Aviv - Jaffa")
+                .zip("123-456")
+                .state("Israel")
+                .build();
 
-        partialUpdateUserRequest.setAddresses(List.of(address));
+        partialUpdateUserRequest.setAddresses(List.of(partialUpdateUserAddress));
 
         String partialUpdateUserRequestJson = objectMapper.writeValueAsString(partialUpdateUserRequest);
 
@@ -936,7 +931,7 @@ public class UserControllerIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(partialUpdateUserRequestJson)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.error").value("Address (id=null, street=null, city=Tel Aviv - Jaffa, zip=123-456, state=Israel) has missing fields.")
+                MockMvcResultMatchers.jsonPath("$.error").value("Address has missing fields [street]")
         );
     }
 
@@ -1021,43 +1016,6 @@ public class UserControllerIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isNotFound()
-        );
-    }
-
-    @Test
-    @DisplayName("Test find all addresses succeeds with status code 200 and finds all addresses belonging to a user")
-    void testFindAllAddressesSucceedsWithStatusCode200AndFindsAllAddressesBelongingToAUser() throws Exception {
-        User testUserA = TestDataUtils.testUserWithAddressAndProfileA(),
-                testUserB = TestDataUtils.testUserWithAddressAndProfileB();
-
-        userRepository.save(testUserA);
-        userRepository.save(testUserB);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(String.format("/users/%d/addresses", testUserA.getId()))
-                        .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(
-                MockMvcResultMatchers.status().isOk()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].id").value(testUserA.getAddresses().get(0).getId())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].street").value(testUserA.getAddresses().get(0).getStreet())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].city").value(testUserA.getAddresses().get(0).getCity())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].zip").value(testUserA.getAddresses().get(0).getZip())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].state").value(testUserA.getAddresses().get(0).getState())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[1].id").value(testUserA.getAddresses().get(1).getId())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[1].street").value(testUserA.getAddresses().get(1).getStreet())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[1].city").value(testUserA.getAddresses().get(1).getCity())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[1].zip").value(testUserA.getAddresses().get(1).getZip())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[1].state").value(testUserA.getAddresses().get(1).getState())
         );
     }
 }

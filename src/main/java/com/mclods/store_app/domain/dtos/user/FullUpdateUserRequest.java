@@ -40,6 +40,7 @@ public class FullUpdateUserRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class FullUpdateUserAddress {
         private Long id;
 
@@ -60,6 +61,7 @@ public class FullUpdateUserRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class FullUpdateUserProfile {
         private String bio;
 

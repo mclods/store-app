@@ -211,32 +211,32 @@ public class TestDataUtils {
     }
 
     public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressA() {
-        return new FullUpdateUserRequest.FullUpdateUserAddress(
-                10L,
-                "11 Pduiim",
-                "Hod Hasharon",
-                "222-000",
-                "Israel"
-        );
+        return FullUpdateUserRequest.FullUpdateUserAddress.builder()
+                .id(10L)
+                .street("11 Pduiim")
+                .city("Hod Hasharon")
+                .zip("222-000")
+                .state("Israel")
+                .build();
     }
 
     public static FullUpdateUserRequest.FullUpdateUserAddress testFullUpdateUserAddressB() {
-        return new FullUpdateUserRequest.FullUpdateUserAddress(
-                12L,
-                "Pob 13078 61130",
-                "Tel Aviv",
-                "311-912",
-                "Israel"
-        );
+        return FullUpdateUserRequest.FullUpdateUserAddress.builder()
+                .id(12L)
+                .street("Pob 13078 61130")
+                .city("Tel Aviv")
+                .zip("311-912")
+                .state("Israel")
+                .build();
     }
 
     public static FullUpdateUserRequest.FullUpdateUserProfile testFullUpdateUserProfileA() {
-        return new FullUpdateUserRequest.FullUpdateUserProfile(
-                "Jamie Olivier",
-                "564-231-411",
-                LocalDate.parse("2025-05-31"),
-                55
-        );
+        return FullUpdateUserRequest.FullUpdateUserProfile.builder()
+                .bio("Jamie Olivier")
+                .phoneNumber("564-231-411")
+                .dateOfBirth(LocalDate.parse("2025-05-31"))
+                .loyaltyPoints(55)
+                .build();
     }
 
     public static PartialUpdateUserRequest testPartialUpdateUserRequestA() {
@@ -246,32 +246,29 @@ public class TestDataUtils {
     }
 
     public static PartialUpdateUserRequest.PartialUpdateUserAddress testPartialUpdateUserAddressA() {
-        return new PartialUpdateUserRequest.PartialUpdateUserAddress(
-                10L,
-                "17 Haoman",
-                "Jerusalem",
-                "2311-1",
-                "Israel"
-        );
+        return PartialUpdateUserRequest.PartialUpdateUserAddress.builder()
+                .id(10L)
+                .street("17 Haoman")
+                .city("Jerusalem")
+                .zip("2311-1")
+                .state("Israel")
+                .build();
     }
 
     public static PartialUpdateUserRequest.PartialUpdateUserAddress testPartialUpdateUserAddressB() {
-        return new PartialUpdateUserRequest.PartialUpdateUserAddress(
-                20L,
-                "142 Iben Gabirol",
-                null,
-                null,
-                "Israel"
-        );
+        return PartialUpdateUserRequest.PartialUpdateUserAddress.builder()
+                .id(20L)
+                .street("17 Haoman")
+                .state("Israel")
+                .build();
     }
 
     public static PartialUpdateUserRequest.PartialUpdateUserProfile testPartialUpdateUserProfileA() {
-        return new PartialUpdateUserRequest.PartialUpdateUserProfile(
-                "I'm an Ingenious Person",
-                null,
-                LocalDate.parse("2025-06-02"),
-                21
-        );
+        return PartialUpdateUserRequest.PartialUpdateUserProfile.builder()
+                .bio("I'm an Ingenious Person")
+                .dateOfBirth(LocalDate.parse("2025-06-02"))
+                .loyaltyPoints(21)
+                .build();
     }
 
     public static PartialUpdateUserRequest testPartialUpdateUserRequestWithAddressAndProfileA() {

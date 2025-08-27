@@ -33,6 +33,7 @@ public class PartialUpdateUserRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class PartialUpdateUserAddress {
         private Long id;
 
@@ -49,6 +50,7 @@ public class PartialUpdateUserRequest {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @Builder
     public static class PartialUpdateUserProfile {
         private String bio;
 

@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
                 Optional.ofNullable(profileToUpdate.getLoyaltyPoints()).ifPresent(existingProfile::setLoyaltyPoints);
             }, () -> {
                 profileToUpdate.setId(null);
-                existingUser.setProfile(profileToUpdate);
+                existingUser.addProfile(profileToUpdate);
             });
         });
 

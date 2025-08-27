@@ -84,7 +84,7 @@ public class UserRepositoryIntegrationTests {
     }
 
     @Test
-    @DisplayName("Test user can be updated")
+    @DisplayName("Test user can be fully updated")
     void testUserCanBeUpdated() {
         User testUser = TestDataUtils.testUserWithAddressAndProfileA();
         userRepository.save(testUser);
@@ -116,10 +116,11 @@ public class UserRepositoryIntegrationTests {
         // Assert Addresses
         assertThat(updatedUser.get().getAddresses()).hasSize(1);
         assertThat(updatedUser.get().getAddresses())
-                .extracting(Address::getStreet, Address::getCity,
+                .extracting(Address::getId, Address::getStreet, Address::getCity,
                         Address::getZip, Address::getState)
                 .containsExactly(
                         tuple(
+                                savedUser.getAddresses().get(0).getId(),
                                 "Azrieli Center 34th Floor",
                                 "Tel Aviv",
                                 "461-211",

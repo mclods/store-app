@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddressHasMissingFieldsException extends Exception {
-    Address address;
-    List<String> missingFields = new ArrayList<>();
+    String message;
 
     public AddressHasMissingFieldsException(Address address) {
-        this.address = address;
+        List<String> missingFields = new ArrayList<>();
 
         if(address.getStreet() == null) {
             missingFields.add("street");
@@ -27,10 +26,17 @@ public class AddressHasMissingFieldsException extends Exception {
         if(address.getState() == null) {
             missingFields.add("state");
         }
+
+        message = String.format("Address has missing fields %s", missingFields);
     }
 
     @Override
     public String getMessage() {
-        return String.format("Address has missing fields %s", missingFields);
+        return message;
+    }
+
+    @Override
+    public String toString() {
+        return message;
     }
 }
