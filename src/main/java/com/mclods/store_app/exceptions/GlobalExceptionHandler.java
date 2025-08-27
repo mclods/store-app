@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleInvalidJson(HttpMessageNotReadableException ex) {
         return ResponseEntity
                 .badRequest()
-                .body(Map.of("error", "Invalid input type: " + ex.getMessage()));
+                .body(Map.of("error", "Invalid JSON Request"));
     }
 
     @ExceptionHandler(Exception.class)
