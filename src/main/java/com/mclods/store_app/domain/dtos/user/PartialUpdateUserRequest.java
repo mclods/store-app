@@ -23,7 +23,7 @@ public class PartialUpdateUserRequest {
 
     private String password;
 
-    @UniqueIds
+    @UniqueIds(message = "Address Ids must be unique")
     @Builder.Default
     private List<PartialUpdateUserAddress> addresses = new ArrayList<>();
 
